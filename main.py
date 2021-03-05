@@ -1,29 +1,31 @@
 import math
 import random
 
-import pygame
-from pygame import mixer
+import pygame as pg
 
 # Intialize the pygame
-pygame.init()
+pg.mixer.pre_init(frequency=44100)
+pg.init()
+pg.mixer.init(frequency=44100)
 
 # create the screen
-screen = pygame.display.set_mode((800, 600))
+screen = pg.display.set_mode((800, 600))
 
 # Background
-background = pygame.image.load('Media/Images/background.png')
+background = pg.image.load('Media/Images/background.png')
 
 # Sound
-mixer.music.load("Media/Sounds/background.wav")
-mixer.music.play(-1)
+pg.mixer.music.load("Media/Sounds/background.wav")
+pg.mixer.music.play(-1)
+bulletSound = pg.mixer.Sound("Media/Sounds/laser.wav")
 
 # Caption and Icon
-pygame.display.set_caption("Space Invader")
-icon = pygame.image.load('Media/Images/ufo.png')
-pygame.display.set_icon(icon)
+pg.display.set_caption("Space Invader")
+icon = pg.image.load('Media/Images/ufo.png')
+pg.display.set_icon(icon)
 
 # Player
-playerImg = pygame.image.load('Media/Images/player.png')
+playerImg = pg.image.load('Media/Images/player.png')
 playerX = 370
 playerY = 480
 playerX_change = 0
@@ -37,7 +39,7 @@ enemyY_change = []
 num_of_enemies = 6
 
 for i in range(num_of_enemies):
-    enemyImg.append(pygame.image.load('Media/Images/enemy.png'))
+    enemyImg.append(pg.image.load('Media/Images/enemy.png'))
     enemyX.append(random.randint(0, 736))
     enemyY.append(random.randint(50, 150))
     enemyX_change.append(4)
@@ -48,7 +50,7 @@ for i in range(num_of_enemies):
 # Ready - You can't see the bullet on the screen
 # Fire - The bullet is currently moving
 
-bulletImg = pygame.image.load('Media/Images/bullet.png')
+bulletImg = pg.image.load('Media/Images/bullet.png')
 bulletX = 0
 bulletY = 480
 bulletX_change = 0
@@ -58,13 +60,13 @@ bullet_state = "ready"
 # Score
 
 score_value = 0
-font = pygame.font.Font('freesansbold.ttf', 32)
+font = pg.font.Font('freesansbold.ttf', 32)
 
 textX = 10
 testY = 10
 
 # Game Over
-over_font = pygame.font.Font('freesansbold.ttf', 64)
+over_font = pg.font.Font('freesansbold.ttf', 64)
 
 
 def show_score(x, y):
@@ -102,31 +104,29 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
 # Game Loop
 running = True
 while running:
-
     # RGB = Red, Green, Blue
     screen.fill((0, 0, 0))
     # Background Image
     screen.blit(background, (0, 0))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
             running = False
 
         # if keystroke is pressed check whether its right or left
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_LEFT:
                 playerX_change = -5
-            if event.key == pygame.K_RIGHT:
+            if event.key == pg.K_RIGHT:
                 playerX_change = 5
-            if event.key == pygame.K_SPACE:
+            if event.key == pg.K_SPACE:
                 if bullet_state == "ready":
-                    bulletSound = mixer.Sound("Media/Sounds/laser.wav")
                     bulletSound.play()
-                    # Get the current x cordinate of the spaceship
+                    # Get the current x coordinate of the spaceship
                     bulletX = playerX
                     fire_bullet(bulletX, bulletY)
 
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+        if event.type == pg.KEYUP:
+            if event.key == pg.K_LEFT or event.key == pg.K_RIGHT:
                 playerX_change = 0
 
     # 5 = 5 + -0.1 -> 5 = 5 - 0.1
@@ -159,7 +159,7 @@ while running:
         # Collision
         collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
         if collision:
-            explosionSound = mixer.Sound("Media/Sounds/explosion.wav")
+            explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
             explosionSound.play()
             bulletY = 480
             bullet_state = "ready"
@@ -180,4 +180,4 @@ while running:
 
     player(playerX, playerY)
     show_score(textX, testY)
-    pygame.display.update()
+    pg.display.update()
