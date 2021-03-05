@@ -1,15 +1,16 @@
 import math
 import random
-
 import pygame as pg
 
-# Intialize the pygame
+# Initialize the pygame
 pg.mixer.pre_init(frequency=44100)
 pg.init()
 pg.mixer.init(frequency=44100)
 
 # create the screen
-screen = pg.display.set_mode((800, 600))
+window_width = 800
+window_height = 600
+screen = pg.display.set_mode((window_width, window_height))
 
 # Background
 background = pg.image.load('Media/Images/background.png')
@@ -30,20 +31,20 @@ playerX = 370
 playerY = 480
 playerX_change = 0
 
-# Enemy
-enemyImg = []
-enemyX = []
-enemyY = []
-enemyX_change = []
-enemyY_change = []
-num_of_enemies = 6
+# Target
+targetImg = []
+targetX = []
+targetY = []
+targetX_change = []
+targetY_change = []
+# num_of_targets = 1
 
-for i in range(num_of_enemies):
-    enemyImg.append(pg.image.load('Media/Images/enemy.png'))
-    enemyX.append(random.randint(0, 736))
-    enemyY.append(random.randint(50, 150))
-    enemyX_change.append(4)
-    enemyY_change.append(40)
+
+targetImg.append(pg.image.load('Media/Images/target.png'))
+targetX.append(window_width // 2 - targetImg[0].get_width() // 2)
+targetY.append(100)
+targetX_change.append(4)
+targetY_change.append(40)
 
 # Bullet
 
@@ -84,7 +85,7 @@ def player(x, y):
 
 
 def enemy(x, y, i):
-    screen.blit(enemyImg[i], (x, y))
+    screen.blit(targetImg[i], (x, y))
 
 
 def fire_bullet(x, y):
@@ -138,36 +139,25 @@ while running:
     elif playerX >= 736:
         playerX = 736
 
-    # Enemy Movement
-    for i in range(num_of_enemies):
+    # Game Over
+    if targetY[0] > 440:
+        for j in range(num_of_planets):
+            targetY[j] = 2000
+        game_over_text()
+        break
 
-        # Game Over
-        if enemyY[i] > 440:
-            for j in range(num_of_enemies):
-                enemyY[j] = 2000
-            game_over_text()
-            break
+    # Collision
+    collision = isCollision(targetX[0], targetY[0], bulletX, bulletY)
+    if collision:
+        explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
+        explosionSound.play()
+        bulletY = 480
+        bullet_state = "ready"
+        score_value += 1
+        targetX[0] = random.randint(0, 736)
+        targetY[0] = random.randint(50, 150)
 
-        enemyX[i] += enemyX_change[i]
-        if enemyX[i] <= 0:
-            enemyX_change[i] = 4
-            enemyY[i] += enemyY_change[i]
-        elif enemyX[i] >= 736:
-            enemyX_change[i] = -4
-            enemyY[i] += enemyY_change[i]
-
-        # Collision
-        collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
-        if collision:
-            explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
-            explosionSound.play()
-            bulletY = 480
-            bullet_state = "ready"
-            score_value += 1
-            enemyX[i] = random.randint(0, 736)
-            enemyY[i] = random.randint(50, 150)
-
-        enemy(enemyX[i], enemyY[i], i)
+    enemy(targetX[0], targetY[0], 0)
 
     # Bullet Movement
     if bulletY <= 0:

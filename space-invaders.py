@@ -39,7 +39,7 @@ enemyY_change = []
 num_of_enemies = 6
 
 for i in range(num_of_enemies):
-    enemyImg.append(pg.image.load('Media/Images/enemy.png'))
+    enemyImg.append(pg.image.load('Media/Images/target.png'))
     enemyX.append(random.randint(0, 736))
     enemyY.append(random.randint(50, 150))
     enemyX_change.append(4)
