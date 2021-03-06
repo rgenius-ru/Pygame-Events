@@ -1,5 +1,5 @@
 import math
-import random
+# import random
 import pygame as pg
 
 # Initialize the pygame
@@ -8,12 +8,14 @@ pg.init()
 pg.mixer.init(frequency=44100)
 
 # create the screen
+# 1280×1024
+# 1024×768
 window_width = 800
 window_height = 600
 screen = pg.display.set_mode((window_width, window_height))
 
 # Background
-background = pg.image.load('Media/Images/background.png')
+background = pg.image.load('Media/Images/background2.png')
 
 # Sound
 pg.mixer.music.load("Media/Sounds/background.wav")
@@ -27,8 +29,8 @@ pg.display.set_icon(icon)
 
 # Player
 playerImg = pg.image.load('Media/Images/player.png')
-playerX = 370
-playerY = 480
+playerX = 20
+playerY = window_height - playerImg.get_height() - 20
 playerX_change = 0
 
 # Target
@@ -37,7 +39,7 @@ targetX = []
 targetY = []
 targetX_change = []
 targetY_change = []
-# num_of_targets = 1
+num_of_targets = 1
 
 
 targetImg.append(pg.image.load('Media/Images/target.png'))
@@ -94,8 +96,8 @@ def fire_bullet(x, y):
     screen.blit(bulletImg, (x + 16, y + 10))
 
 
-def isCollision(enemyX, enemyY, bulletX, bulletY):
-    distance = math.sqrt(math.pow(enemyX - bulletX, 2) + (math.pow(enemyY - bulletY, 2)))
+def is_collision(enemy_x, enemy_y, bullet_x, bullet_y):
+    distance = math.sqrt(math.pow(enemy_x - bullet_x, 2) + (math.pow(enemy_y - bullet_y, 2)))
     if distance < 27:
         return True
     else:
@@ -141,21 +143,19 @@ while running:
 
     # Game Over
     if targetY[0] > 440:
-        for j in range(num_of_planets):
+        for j in range(num_of_targets):
             targetY[j] = 2000
         game_over_text()
         break
 
     # Collision
-    collision = isCollision(targetX[0], targetY[0], bulletX, bulletY)
+    collision = is_collision(targetX[0], targetY[0], bulletX, bulletY)
     if collision:
         explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
         explosionSound.play()
         bulletY = 480
         bullet_state = "ready"
         score_value += 1
-        targetX[0] = random.randint(0, 736)
-        targetY[0] = random.randint(50, 150)
 
     enemy(targetX[0], targetY[0], 0)
 
