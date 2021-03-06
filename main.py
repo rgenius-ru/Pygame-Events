@@ -14,8 +14,8 @@ fpsClock = pg.time.Clock()
 # create the screen
 # 1280×1024
 # 1024×768
-screen_size = ((800, 600), (1024, 768), (1280, 1024), (1920, 1080))
-window_width, window_height = screen_size[0]
+screen_size = ((800, 600), (1024, 768), (1280, 1024), (1440, 960), (1920, 1080))
+window_width, window_height = screen_size[3]
 screen = pg.display.set_mode((window_width, window_height))
 
 # Background
@@ -102,8 +102,8 @@ def game_over_text():
 
 
 def player(x, y, img):
-    x = x - player1_img.get_width() // 2
-    y = y - player1_img.get_height() // 2
+    x = x - img.get_width() // 2
+    y = y - img.get_height() // 2
     screen.blit(img, (x, y))
 
 
