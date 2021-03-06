@@ -8,6 +8,9 @@ pg.mixer.pre_init(frequency=44100)
 pg.init()
 pg.mixer.init(frequency=44100)
 
+FPS = 30  # frames per second setting
+fpsClock = pg.time.Clock()
+
 # create the screen
 # 1280×1024
 # 1024×768
@@ -28,14 +31,17 @@ pg.display.set_caption("Space Invader")
 icon = pg.image.load('Media/Images/ufo.png')
 pg.display.set_icon(icon)
 
-# Player
-playerImg = pg.image.load('Media/Images/player.png')
-playerX = 20
-playerY = window_height - playerImg.get_height() // 2
-playerX_change = 0
-playerY_change = 0
-player_gravity = 2
-player_angle_deg = 0
+# Gravity
+gravity = 2
+
+# Player 1
+player1_img = pg.image.load('Media/Images/player.png')
+player1_img_rotated = player1_img
+player1_x = 20
+player1_y = window_height - player1_img.get_height() // 2
+player1_x_change = 0
+player1_y_change = 0
+player1_angle_deg = -65
 
 # Target
 targetImg = pg.image.load('Media/Images/target.png')
@@ -46,7 +52,7 @@ targetY = targetImg.get_height() // 2 + 20
 # y = a(x-b)^2 + c
 c = targetY
 b = targetX
-a = (playerY - c) / ((playerX - b) ** 2)
+a = (player1_y - c) / ((player1_x - b) ** 2)
 # print(a, b, c)
 
 # Bullet
@@ -83,10 +89,10 @@ def game_over_text():
     screen.blit(over_text, (200, 250))
 
 
-def player(x, y):
-    x = x - playerImg.get_width() // 2
-    y = y - playerImg.get_height() // 2
-    screen.blit(playerImg, (x, y))
+def player(x, y, img):
+    x = x - player1_img.get_width() // 2
+    y = y - player1_img.get_height() // 2
+    screen.blit(img, (x, y))
 
 
 def target(x, y):
@@ -123,33 +129,35 @@ while running:
         # if keystroke is pressed check whether its right or left
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
-                playerY_change = -5
+                player1_y_change = -5
                 if bullet_state == "ready":
                     bulletSound.play()
                     # Get the current x coordinate of the spaceship
-                    bulletX = playerX
+                    bulletX = player1_x
                     fire_bullet(bulletX, bulletY)
 
         if event.type == pg.KEYUP:
             if event.key == pg.K_SPACE:
-                playerY_change = 0
+                player1_y_change = 0
 
     # playerX = ((playerY - c) / a) ** 0.5 + b
-    if (playerY - c) / a > 0:
-        playerY += playerY_change + player_gravity
-        playerX = b - ((playerY - c) / a) ** 0.5  # paraboloid movement
+    if (player1_y - c) / a > 0:
+        player1_y += player1_y_change + gravity
+        player1_x = b - ((player1_y - c) / a) ** 0.5  # paraboloid movement
 
-    if playerY <= 0:
-        playerY = 0
-    elif playerY >= window_height:
-        playerY = window_height
+    if player1_y <= 0:
+        player1_y = 0
+    elif player1_y >= window_height:
+        player1_y = window_height
 
-    player_angle_rad = np.arctan(2 * a * (playerX - b))  # tan(angle) = y' = (a(x-b)^2)' = 2a(x-b)
-    player_angle_delta = player_angle_deg - np.degrees(player_angle_rad)
-    if np.abs(player_angle_delta) > 1:
-        player_angle_deg += player_angle_delta
-        #playerImg = pg.transform.rotate(playerImg, player_angle_delta)
-        print(player_angle_delta)
+    player1_angle_rad = np.arctan(2 * a * (player1_x - b))  # tan(angle) = y' = (a(x-b)^2)' = 2a(x-b)
+    player1_angle_delta = player1_angle_deg - np.degrees(player1_angle_rad)
+    player1_angle_delta = int(player1_angle_delta)
+    if np.abs(player1_angle_delta) > 1:
+        player1_angle_deg -= player1_angle_delta
+        player1_img_rotated = pg.transform.rotate(player1_img, -player1_angle_deg - 65)
+        print(player1_angle_delta, player1_angle_deg)
+        player1_angle_delta = 0
 
     # Game Over
     if targetY > 440:
@@ -177,6 +185,7 @@ while running:
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
-    player(playerX, playerY)
+    player(player1_x, player1_y, player1_img_rotated)
     show_score(textX, testY)
     pg.display.update()
+    fpsClock.tick(FPS)
