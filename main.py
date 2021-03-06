@@ -30,25 +30,21 @@ pg.display.set_icon(icon)
 # Player
 playerImg = pg.image.load('Media/Images/player.png')
 playerX = 20
-playerY = window_height - playerImg.get_height() - 20
+playerY = window_height - playerImg.get_height() // 2
 playerX_change = 0
 playerY_change = 0
 player_gravity = 2
 
 # Target
-targetImg = []
-targetX = []
-targetY = []
-targetX_change = []
-targetY_change = []
-num_of_targets = 1
+targetImg = pg.image.load('Media/Images/target.png')
+targetX = window_width // 2
+targetY = targetImg.get_height() // 2 + 20
 
-
-targetImg.append(pg.image.load('Media/Images/target.png'))
-targetX.append(window_width // 2 - targetImg[0].get_width() // 2)
-targetY.append(20)
-targetX_change.append(4)
-targetY_change.append(40)
+# y = a(x-b)^2 + c
+c = targetY
+b = targetX
+a = (playerY - c) / ((playerX - b) ** 2)
+print(a, b, c)
 
 # Bullet
 
@@ -85,11 +81,15 @@ def game_over_text():
 
 
 def player(x, y):
+    x = x - playerImg.get_width() // 2
+    y = y - playerImg.get_height() // 2
     screen.blit(playerImg, (x, y))
 
 
-def enemy(x, y, i):
-    screen.blit(targetImg[i], (x, y))
+def target(x, y):
+    x = x - targetImg.get_width() // 2
+    y = y - targetImg.get_height() // 2
+    screen.blit(targetImg, (x, y))
 
 
 def fire_bullet(x, y):
@@ -143,24 +143,23 @@ while running:
     playerY += playerY_change + player_gravity
     if playerY <= 0:
         playerY = 0
-    elif playerY >= window_height - playerImg.get_height():
-        playerY = window_height - playerImg.get_height()
+    elif playerY >= window_height:
+        playerY = window_height
 
     playerX += playerX_change
     if playerX <= 0:
         playerX = 0
-    elif playerX >= 736:
-        playerX = 736
+    elif playerX >= window_width:
+        playerX = window_width
 
     # Game Over
-    if targetY[0] > 440:
-        for j in range(num_of_targets):
-            targetY[j] = 2000
+    if targetY > 440:
+        targetY = 2000
         game_over_text()
         break
 
     # Collision
-    collision = is_collision(targetX[0], targetY[0], bulletX, bulletY)
+    collision = is_collision(targetX, targetY, bulletX, bulletY)
     if collision:
         explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
         explosionSound.play()
@@ -168,7 +167,7 @@ while running:
         bullet_state = "ready"
         score_value += 1
 
-    enemy(targetX[0], targetY[0], 0)
+    target(targetX, targetY)
 
     # Bullet Movement
     if bulletY <= 0:
