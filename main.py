@@ -32,6 +32,8 @@ playerImg = pg.image.load('Media/Images/player.png')
 playerX = 20
 playerY = window_height - playerImg.get_height() - 20
 playerX_change = 0
+playerY_change = 0
+player_gravity = 2
 
 # Target
 targetImg = []
@@ -44,7 +46,7 @@ num_of_targets = 1
 
 targetImg.append(pg.image.load('Media/Images/target.png'))
 targetX.append(window_width // 2 - targetImg[0].get_width() // 2)
-targetY.append(100)
+targetY.append(20)
 targetX_change.append(4)
 targetY_change.append(40)
 
@@ -122,6 +124,7 @@ while running:
             if event.key == pg.K_RIGHT:
                 playerX_change = 5
             if event.key == pg.K_SPACE:
+                playerY_change = -5
                 if bullet_state == "ready":
                     bulletSound.play()
                     # Get the current x coordinate of the spaceship
@@ -131,9 +134,17 @@ while running:
         if event.type == pg.KEYUP:
             if event.key == pg.K_LEFT or event.key == pg.K_RIGHT:
                 playerX_change = 0
+            if event.key == pg.K_SPACE:
+                playerY_change = 0
 
     # 5 = 5 + -0.1 -> 5 = 5 - 0.1
     # 5 = 5 + 0.1
+
+    playerY += playerY_change + player_gravity
+    if playerY <= 0:
+        playerY = 0
+    elif playerY >= window_height - playerImg.get_height():
+        playerY = window_height - playerImg.get_height()
 
     playerX += playerX_change
     if playerX <= 0:
