@@ -34,6 +34,9 @@ pg.display.set_icon(icon)
 # Gravity
 gravity = 2
 
+# Players speed
+players_speed = 2 * window_height / 600
+
 # Player 1
 player1_img = pg.image.load('Media/Images/player.png')
 player1_img_rotated = player1_img
@@ -42,6 +45,15 @@ player1_y = window_height - player1_img.get_height() // 2
 player1_x_change = 0
 player1_y_change = 0
 player1_angle_deg = -65
+
+# Player 2
+player2_img = pg.image.load('Media/Images/player.png')
+player2_img_rotated = player2_img
+player2_x = window_width - player2_img.get_width() // 2 - 20
+player2_y = window_height - player2_img.get_height() // 2
+player2_x_change = 0
+player2_y_change = 0
+player2_angle_deg = -65
 
 # Target
 targetImg = pg.image.load('Media/Images/target.png')
@@ -128,19 +140,23 @@ while running:
 
         # if keystroke is pressed check whether its right or left
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_SPACE:
+            if event.key == pg.K_w:
                 player1_y_change = -5
                 if bullet_state == "ready":
                     bulletSound.play()
                     # Get the current x coordinate of the spaceship
                     bulletX = player1_x
                     fire_bullet(bulletX, bulletY)
+            if event.key == pg.K_UP:
+                player2_y_change = -5
 
         if event.type == pg.KEYUP:
-            if event.key == pg.K_SPACE:
+            if event.key == pg.K_w:
                 player1_y_change = 0
+            if event.key == pg.K_UP:
+                player2_y_change = 0
 
-    # playerX = ((playerY - c) / a) ** 0.5 + b
+    # Player 1
     if (player1_y - c) / a > 0:
         player1_y += player1_y_change + gravity
         player1_x = b - ((player1_y - c) / a) ** 0.5  # paraboloid movement
@@ -156,8 +172,26 @@ while running:
     if np.abs(player1_angle_delta) > 1:
         player1_angle_deg -= player1_angle_delta
         player1_img_rotated = pg.transform.rotate(player1_img, -player1_angle_deg - 65)
-        print(player1_angle_delta, player1_angle_deg)
         player1_angle_delta = 0
+
+    # Player 2
+    if (player2_y - c) / a > 0:
+        player2_y += player2_y_change + gravity
+        player2_x = ((player2_y - c) / a) ** 0.5 + b  # paraboloid movement
+
+    if player2_y <= 0:
+        player2_y = 0
+    elif player2_y >= window_height:
+        player2_y = window_height
+
+    player2_angle_rad = np.arctan(2 * a * (player2_x - b))  # tan(angle) = y' = (a(x-b)^2)' = 2a(x-b)
+    player2_angle_delta = player2_angle_deg - np.degrees(player2_angle_rad)
+    player2_angle_delta = int(player2_angle_delta)
+    if np.abs(player2_angle_delta) > 1:
+        player2_angle_deg -= player2_angle_delta
+        player2_img_rotated = pg.transform.rotate(player2_img, -player2_angle_deg + 65)
+        print(player2_angle_delta, player2_angle_deg)
+        player2_angle_delta = 0
 
     # Game Over
     if targetY > 440:
@@ -186,6 +220,7 @@ while running:
         bulletY -= bulletY_change
 
     player(player1_x, player1_y, player1_img_rotated)
+    player(player2_x, player2_y, player2_img_rotated)
     show_score(textX, testY)
     pg.display.update()
     fpsClock.tick(FPS)
