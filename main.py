@@ -1,6 +1,7 @@
 import math
 # import random
 import pygame as pg
+import numpy as np
 
 # Initialize the pygame
 pg.mixer.pre_init(frequency=44100)
@@ -34,17 +35,19 @@ playerY = window_height - playerImg.get_height() // 2
 playerX_change = 0
 playerY_change = 0
 player_gravity = 2
+player_angle_deg = 0
 
 # Target
 targetImg = pg.image.load('Media/Images/target.png')
 targetX = window_width // 2
 targetY = targetImg.get_height() // 2 + 20
 
+# Paraboloid
 # y = a(x-b)^2 + c
 c = targetY
 b = targetX
 a = (playerY - c) / ((playerX - b) ** 2)
-print(a, b, c)
+# print(a, b, c)
 
 # Bullet
 
@@ -119,10 +122,6 @@ while running:
 
         # if keystroke is pressed check whether its right or left
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_LEFT:
-                playerX_change = -5
-            if event.key == pg.K_RIGHT:
-                playerX_change = 5
             if event.key == pg.K_SPACE:
                 playerY_change = -5
                 if bullet_state == "ready":
@@ -132,25 +131,25 @@ while running:
                     fire_bullet(bulletX, bulletY)
 
         if event.type == pg.KEYUP:
-            if event.key == pg.K_LEFT or event.key == pg.K_RIGHT:
-                playerX_change = 0
             if event.key == pg.K_SPACE:
                 playerY_change = 0
 
-    # 5 = 5 + -0.1 -> 5 = 5 - 0.1
-    # 5 = 5 + 0.1
+    # playerX = ((playerY - c) / a) ** 0.5 + b
+    if (playerY - c) / a > 0:
+        playerY += playerY_change + player_gravity
+        playerX = b - ((playerY - c) / a) ** 0.5  # paraboloid movement
 
-    playerY += playerY_change + player_gravity
     if playerY <= 0:
         playerY = 0
     elif playerY >= window_height:
         playerY = window_height
 
-    playerX += playerX_change
-    if playerX <= 0:
-        playerX = 0
-    elif playerX >= window_width:
-        playerX = window_width
+    player_angle_rad = np.arctan(2 * a * (playerX - b))  # tan(angle) = y' = (a(x-b)^2)' = 2a(x-b)
+    player_angle_delta = player_angle_deg - np.degrees(player_angle_rad)
+    if np.abs(player_angle_delta) > 1:
+        player_angle_deg += player_angle_delta
+        #playerImg = pg.transform.rotate(playerImg, player_angle_delta)
+        print(player_angle_delta)
 
     # Game Over
     if targetY > 440:
