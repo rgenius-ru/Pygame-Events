@@ -18,6 +18,15 @@ screen_size = ((800, 600), (1024, 768), (1280, 1024), (1440, 960), (1920, 1080))
 window_width, window_height = screen_size[3]
 screen = pg.display.set_mode((window_width, window_height))
 
+# Game
+flag_game_over = False
+
+# Gravity
+gravity = 1 * window_height / 600
+
+# Players speed
+players_speed = 5 * window_height / 600
+
 # Background
 background = pg.image.load('Media/Images/background2.png')
 
@@ -30,12 +39,6 @@ bulletSound = pg.mixer.Sound("Media/Sounds/laser.wav")
 pg.display.set_caption("Space Invader")
 icon = pg.image.load('Media/Images/ufo.png')
 pg.display.set_icon(icon)
-
-# Gravity
-gravity = 1 * window_height / 600
-
-# Players speed
-players_speed = 5 * window_height / 600
 
 # Player 1
 player1_img = pg.image.load('Media/Images/player.png')
@@ -84,11 +87,25 @@ bullet_state = "ready"
 score_value = 0
 font = pg.font.Font('freesansbold.ttf', 32)
 
-textX = 10
-testY = 10
+score_x = 10
+score_y = 10
 
 # Game Over
 over_font = pg.font.Font('freesansbold.ttf', 64)
+
+
+class Player:
+    def __init__(self, img_str, x, y=window_height, angle_deg=-65):
+        self.img = pg.image.load(img_str)
+        self.img_rotated = self.img
+        self.x = x - self.img.get_width() // 2
+        self.y = y - self.img.get_height() // 2
+        self.x_change = 0
+        self.y_change = 0
+        self.angle_deg = angle_deg
+
+    def move(self):
+        pass
 
 
 def show_score(x, y):
@@ -127,6 +144,21 @@ def is_collision(enemy_x, enemy_y, bullet_x, bullet_y):
         return False
 
 
+def round_over():
+    pass
+
+
+def game_over():
+    """
+    Game Over
+    :return:
+    """
+    game_over_text()
+
+
+player1 = Player('Media/Images/player.png', x=20)
+player2 = Player('Media/Images/player.png', x=window_width-20)
+
 # Game Loop
 running = True
 while running:
@@ -157,11 +189,13 @@ while running:
                 player2_y_change = 0
 
     # Player 1
-    if player1_y - players_speed > c:
+    if player1_y - players_speed > targetY:
         player1_y += player1_y_change + gravity
         player1_x = b - ((player1_y - c) / a) ** 0.5  # paraboloid movement
     else:
         player1_y += gravity
+        flag_game_over = True
+        game_over()
 
     if player1_y <= 0:
         player1_y = 0
@@ -177,11 +211,13 @@ while running:
         player1_angle_delta = 0
 
     # Player 2
-    if player2_y - players_speed > c:
+    if player2_y - players_speed > targetY:
         player2_y += player2_y_change + gravity
         player2_x = ((player2_y - c) / a) ** 0.5 + b  # paraboloid movement
     else:
         player2_y += gravity
+        flag_game_over = True
+        game_over()
 
     if player2_y <= 0:
         player2_y = 0
@@ -195,12 +231,6 @@ while running:
         player2_angle_deg -= player2_angle_delta
         player2_img_rotated = pg.transform.rotate(player2_img, -player2_angle_deg + 65)
         player2_angle_delta = 0
-
-    # Game Over
-    if targetY > 440:
-        targetY = 2000
-        game_over_text()
-        break
 
     # Collision
     collision = is_collision(targetX, targetY, bulletX, bulletY)
@@ -224,6 +254,6 @@ while running:
 
     player(player1_x, player1_y, player1_img_rotated)
     player(player2_x, player2_y, player2_img_rotated)
-    show_score(textX, testY)
+    show_score(score_x, score_y)
     pg.display.update()
     fpsClock.tick(FPS)
