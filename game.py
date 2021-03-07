@@ -1,5 +1,5 @@
 import math
-from pygame.font import Font
+from pygame import font, image, mixer, display
 
 
 class Game:
@@ -8,19 +8,31 @@ class Game:
 
         # Score
         self.score_value = 0
-        self.font = Font('freesansbold.ttf', 32)
+        self.font = font.Font('freesansbold.ttf', 32)
 
         self.score_x = 10
         self.score_y = 10
 
         # Game Over
-        self.over_font = Font('freesansbold.ttf', 64)
+        self.over_font = font.Font('freesansbold.ttf', 64)
 
         # Game
         self.flag_game_over = False
 
         # Gravity
         self.gravity = 1 * screen.height / 600
+
+        # Background
+        self.background = image.load('Media/Images/background2.png')
+
+        # Sound
+        mixer.music.load("Media/Sounds/background.wav")
+        mixer.music.play(-1)
+
+        # Caption and Icon
+        display.set_caption("Space Invader")
+        icon = image.load('Media/Images/ufo.png')
+        display.set_icon(icon)
 
     def show_score(self):
         score = self.font.render("Score : " + str(self.score_value), True, (255, 255, 255))
