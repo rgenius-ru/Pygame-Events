@@ -15,16 +15,9 @@ pg.init()
 pg.mixer.init(frequency=44100)
 
 
-screen1 = Screen(Screen.resolution_list[0])
+screen1 = Screen(resolution_id=0)
 game1 = Game(screen1)
-target1 = Target(screen1.screen)
-
-# Frames per second setting
-FPS = 30
-fpsClock = pg.time.Clock()
-
-# Players speed
-players_speed = 5 * screen1.height / 600
+target1 = Target(screen1)
 
 
 track1 = Track('left', x1=target1.center_x, y1=target1.center_y, x2=20, y2=screen1.height)
@@ -36,22 +29,27 @@ player1 = Player(pg.image.load('Media/Images/player.png'),
                  track=track1,
                  x=20,
                  y=screen1.height,
-                 gravity=game1.gravity
+                 gravity=game1.gravity,
+                 speed=screen1.height/120
                  )
 player2 = Player(pg.image.load('Media/Images/player.png'),
                  scr=screen1.screen,
                  track=track2,
                  x=screen1.width-20,
                  y=screen1.height,
-                 gravity=game1.gravity
+                 gravity=game1.gravity,
+                 speed=screen1.height/120
                  )
+
+
+# Frames per second setting
+FPS = 30
+fpsClock = pg.time.Clock()
 
 
 # Game Loop
 running = True
 while running:
-    # Background Image
-    screen1.screen.blit(game1.background, (0, 0))
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
@@ -68,9 +66,9 @@ while running:
             if event.key == pg.K_UP:
                 player2.stop()
 
+    game1.update()  # Game update first
     target1.update()
     player1.update()
     player2.update()
-    game1.show_score()
     pg.display.update()
     fpsClock.tick(FPS)
