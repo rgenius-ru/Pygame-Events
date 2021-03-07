@@ -34,6 +34,10 @@ class Game:
         icon = image.load('Media/Images/ufo.png')
         display.set_icon(icon)
 
+    def update(self):
+        self.screen.screen.blit(self.background, (0, 0))
+        self.show_score()
+
     def show_score(self):
         score = self.font.render("Score : " + str(self.score_value), True, (255, 255, 255))
         self.screen.screen.blit(score, (self.score_x, self.score_y))
