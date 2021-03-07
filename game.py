@@ -1,17 +1,22 @@
-import math
 from pygame import font, image, mixer, display
 
 
 class Game:
     def __init__(self, screen):
         self.screen = screen
+        self.is_round_over = False
+        self.is_game_over = False
 
         # Score
-        self.score_value = 0
         self.font = font.Font('freesansbold.ttf', 32)
+        self.score1_value = 0
+        self.score2_value = 0
 
-        self.score_x = 10
-        self.score_y = 10
+        self.score1_x = 10
+        self.score1_y = 10
+
+        self.score2_x = screen.width - 10
+        self.score2_y = 10
 
         # Game Over
         self.over_font = font.Font('freesansbold.ttf', 64)
@@ -36,22 +41,28 @@ class Game:
 
     def update(self):
         self.screen.screen.blit(self.background, (0, 0))
-        self.show_score()
+        self.show_score1()
+        self.show_score2()
 
-    def show_score(self):
-        score = self.font.render("Score : " + str(self.score_value), True, (255, 255, 255))
-        self.screen.screen.blit(score, (self.score_x, self.score_y))
+    def show_score1(self):
+        score = self.font.render("Score : " + str(self.score1_value), True, (255, 255, 255))
+        self.screen.screen.blit(score, (self.score1_x, self.score1_y))
+
+    def show_score2(self):
+        score = self.font.render("Score : " + str(self.score2_value), True, (255, 255, 255))
+        self.screen.screen.blit(score, (self.score2_x - score.get_width(), self.score2_y))
 
     def game_over_text(self):
         over_text = self.over_font.render("GAME OVER", True, (255, 255, 255))
         self.screen.screen.blit(over_text, (200, 250))
 
     def round_over(self):
-        pass
+        self.is_round_over = True
 
     def game_over(self):
         """
         Game Over
         :return:
         """
+        self.is_game_over = True
         self.game_over_text()

@@ -1,4 +1,5 @@
 import pygame as pg
+import math
 # import random
 # import numpy as np
 
@@ -47,12 +48,17 @@ FPS = 30
 fpsClock = pg.time.Clock()
 
 
-def is_collision(self, enemy_x, enemy_y, bullet_x, bullet_y):
-    distance = math.sqrt(math.pow(enemy_x - bullet_x, 2) + (math.pow(enemy_y - bullet_y, 2)))
-    if distance < 27:
+def is_collision(obj1_x, obj1_y, obj2_x, obj2_y):
+    distance = math.sqrt(math.pow(obj1_x - obj2_x, 2) + (math.pow(obj1_y - obj2_y, 2)))
+    if distance < 60:
         return True
     else:
         return False
+
+
+def draw_track(track):
+    for y in range(track.y_min, track.y_max):
+        pg.draw.circle(game1.screen.screen, (0, 0, 220), (track.get_x(y), y), radius=1, width=1)
 
 
 # Game Loop
@@ -74,18 +80,28 @@ while running:
             if event.key == pg.K_UP:
                 player2.stop()
 
-    # # Collision
-    # collision = game1.is_collision(target1.center_x, target1.center_y, bulletX, bulletY)
-    # if collision:
-    #     explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
-    #     explosionSound.play()
-    #     bulletY = 480
-    #     bullet_state = "ready"
-    #     game1.score_value += 1
+    # Collision
+    collision_player1 = is_collision(target1.center_x, target1.center_y, player1.x, player1.y)
+    collision_player2 = is_collision(target1.center_x, target1.center_y, player2.x, player2.y)
+
+    if collision_player1 or collision_player2:
+        explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
+        explosionSound.play()
+        game1.round_over()
+
+    if collision_player1:
+        game1.score1_value += 1
+    if collision_player2:
+        game1.score2_value += 1
 
     game1.update()  # Game update first
     target1.update()  # Second update target
     player1.update()
     player2.update()
+    pg.draw.circle(game1.screen.screen, (0, 200, 0), (target1.center_x, target1.center_y), radius=60, width=2)
+    pg.draw.circle(game1.screen.screen, (220, 0, 0), (player1.x, player1.y), radius=20, width=2)
+    pg.draw.circle(game1.screen.screen, (220, 0, 0), (player2.x, player2.y), radius=20, width=2)
+    draw_track(track1)
+    draw_track(track2)
     pg.display.update()
     fpsClock.tick(FPS)
