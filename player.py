@@ -3,13 +3,13 @@ from pygame.transform import rotate
 
 
 class Player:
-    def __init__(self, pg_img, scr, track, x, y, angle_deg=-65, gravity=1):
+    def __init__(self, pg_img, scr, track, x, y, angle_deg=-65, gravity=1, speed=5):
         self.screen = scr
         self.img = pg_img
         self.img_rotated = self.img
         self.x = x - self.img.get_width() // 2
         self.y = y - self.img.get_height() // 2
-        self.speed = 5 * self.screen.get_height() / 600
+        self.speed = speed
         self.track = track
         self.x_change = 0
         self.y_change = 0
