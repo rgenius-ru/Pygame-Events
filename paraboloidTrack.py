@@ -31,4 +31,4 @@ class Track:
 
     def __tangent_angle2(self, x):
         angle_rad = arctan(2 * self.a * (x - self.b))  # tan(angle) = y' = (a(x-b)^2)' = 2a(x-b)
-        return degrees(angle_rad) - 135
+        return degrees(angle_rad) - 130

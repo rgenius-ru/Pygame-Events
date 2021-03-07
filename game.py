@@ -46,13 +46,6 @@ class Game:
         over_text = self.over_font.render("GAME OVER", True, (255, 255, 255))
         self.screen.screen.blit(over_text, (200, 250))
 
-    def is_collision(self, enemy_x, enemy_y, bullet_x, bullet_y):
-        distance = math.sqrt(math.pow(enemy_x - bullet_x, 2) + (math.pow(enemy_y - bullet_y, 2)))
-        if distance < 27:
-            return True
-        else:
-            return False
-
     def round_over(self):
         pass
 
@@ -62,12 +55,3 @@ class Game:
         :return:
         """
         self.game_over_text()
-
-    # # Collision
-    # collision = game1.is_collision(target1.center_x, target1.center_y, bulletX, bulletY)
-    # if collision:
-    #     explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
-    #     explosionSound.play()
-    #     bulletY = 480
-    #     bullet_state = "ready"
-    #     game1.score_value += 1
