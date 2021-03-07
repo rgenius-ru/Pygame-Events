@@ -1,7 +1,11 @@
 import math
 # import random
 import pygame as pg
-import numpy as np
+# import numpy as np
+
+from paraboloidTrack import Track
+from player import Player
+from screen import Screen
 
 # Initialize the pygame
 pg.mixer.pre_init(frequency=44100)
@@ -11,21 +15,16 @@ pg.mixer.init(frequency=44100)
 FPS = 30  # frames per second setting
 fpsClock = pg.time.Clock()
 
-# create the screen
-# 1280×1024
-# 1024×768
-screen_size = ((800, 600), (1024, 768), (1280, 1024), (1440, 960), (1920, 1080))
-window_width, window_height = screen_size[3]
-screen = pg.display.set_mode((window_width, window_height))
+screen1 = Screen(Screen.resolution_list[0])
 
 # Game
 flag_game_over = False
 
 # Gravity
-gravity = 1 * window_height / 600
+gravity = 1 * screen1.height / 600
 
 # Players speed
-players_speed = 5 * window_height / 600
+players_speed = 5 * screen1.height / 600
 
 # Background
 background = pg.image.load('Media/Images/background2.png')
@@ -40,35 +39,31 @@ pg.display.set_caption("Space Invader")
 icon = pg.image.load('Media/Images/ufo.png')
 pg.display.set_icon(icon)
 
-# Player 1
-player1_img = pg.image.load('Media/Images/player.png')
-player1_img_rotated = player1_img
-player1_x = 20
-player1_y = window_height - player1_img.get_height() // 2
-player1_x_change = 0
-player1_y_change = 0
-player1_angle_deg = -65
-
-# Player 2
-player2_img = pg.image.load('Media/Images/player.png')
-player2_img_rotated = player2_img
-player2_x = window_width - player2_img.get_width() // 2 - 20
-player2_y = window_height - player2_img.get_height() // 2
-player2_x_change = 0
-player2_y_change = 0
-player2_angle_deg = -65
-
 # Target
 targetImg = pg.image.load('Media/Images/target.png')
-targetX = window_width // 2
+targetX = screen1.width // 2
 targetY = targetImg.get_height() // 2 + 20
 
-# Paraboloid
-# y = a(x-b)^2 + c
-c = targetY
-b = targetX
-a = (player1_y - c) / ((player1_x - b) ** 2)
-print(a, b, c)
+
+track1 = Track('left', x1=targetX, y1=targetY, x2=20, y2=screen1.height)
+track2 = Track('right', x1=targetX, y1=targetY, x2=20, y2=screen1.height)
+
+
+player1 = Player(pg.image.load('Media/Images/player.png'),
+                 scr=screen1.screen,
+                 track=track1,
+                 x=20,
+                 y=screen1.height,
+                 gravity=gravity
+                 )
+player2 = Player(pg.image.load('Media/Images/player.png'),
+                 scr=screen1.screen,
+                 track=track2,
+                 x=screen1.width-20,
+                 y=screen1.height,
+                 gravity=gravity
+                 )
+
 
 # Bullet
 
@@ -94,46 +89,26 @@ score_y = 10
 over_font = pg.font.Font('freesansbold.ttf', 64)
 
 
-class Player:
-    def __init__(self, img_str, x, y=window_height, angle_deg=-65):
-        self.img = pg.image.load(img_str)
-        self.img_rotated = self.img
-        self.x = x - self.img.get_width() // 2
-        self.y = y - self.img.get_height() // 2
-        self.x_change = 0
-        self.y_change = 0
-        self.angle_deg = angle_deg
-
-    def move(self):
-        pass
-
-
 def show_score(x, y):
     score = font.render("Score : " + str(score_value), True, (255, 255, 255))
-    screen.blit(score, (x, y))
+    screen1.screen.blit(score, (x, y))
 
 
 def game_over_text():
     over_text = over_font.render("GAME OVER", True, (255, 255, 255))
-    screen.blit(over_text, (200, 250))
-
-
-def player(x, y, img):
-    x = x - img.get_width() // 2
-    y = y - img.get_height() // 2
-    screen.blit(img, (x, y))
+    screen1.screen.blit(over_text, (200, 250))
 
 
 def target(x, y):
     x = x - targetImg.get_width() // 2
     y = y - targetImg.get_height() // 2
-    screen.blit(targetImg, (x, y))
+    screen1.screen.blit(targetImg, (x, y))
 
 
 def fire_bullet(x, y):
     global bullet_state
     bullet_state = "fire"
-    screen.blit(bulletImg, (x + 16, y + 10))
+    screen1.screen.blit(bulletImg, (x + 16, y + 10))
 
 
 def is_collision(enemy_x, enemy_y, bullet_x, bullet_y):
@@ -156,81 +131,34 @@ def game_over():
     game_over_text()
 
 
-player1 = Player('Media/Images/player.png', x=20)
-player2 = Player('Media/Images/player.png', x=window_width-20)
-
 # Game Loop
 running = True
 while running:
     # RGB = Red, Green, Blue
-    screen.fill((0, 0, 0))
+    screen1.screen.fill((0, 0, 0))
     # Background Image
-    screen.blit(background, (0, 0))
+    screen1.screen.blit(background, (0, 0))
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
 
-        # if keystroke is pressed check whether its right or left
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_w:
-                player1_y_change = -players_speed
+                # player1_y_change = -players_speed
+                player1.launch()
                 if bullet_state == "ready":
                     bulletSound.play()
                     # Get the current x coordinate of the spaceship
-                    bulletX = player1_x
+                    bulletX = player1.x
                     fire_bullet(bulletX, bulletY)
             if event.key == pg.K_UP:
-                player2_y_change = -players_speed
+                player2.launch()
 
         if event.type == pg.KEYUP:
             if event.key == pg.K_w:
-                player1_y_change = 0
+                player1.stop()
             if event.key == pg.K_UP:
-                player2_y_change = 0
-
-    # Player 1
-    if player1_y - players_speed > targetY:
-        player1_y += player1_y_change + gravity
-        player1_x = b - ((player1_y - c) / a) ** 0.5  # paraboloid movement
-    else:
-        player1_y += gravity
-        flag_game_over = True
-        game_over()
-
-    if player1_y <= 0:
-        player1_y = 0
-    elif player1_y > window_height - player1_img.get_height() // 2:
-        player1_y = window_height - player1_img.get_height() // 2
-
-    player1_angle_rad = np.arctan(2 * a * (player1_x - b))  # tan(angle) = y' = (a(x-b)^2)' = 2a(x-b)
-    player1_angle_delta = player1_angle_deg - np.degrees(player1_angle_rad)
-    player1_angle_delta = int(player1_angle_delta)
-    if np.abs(player1_angle_delta) > 1:
-        player1_angle_deg -= player1_angle_delta
-        player1_img_rotated = pg.transform.rotate(player1_img, -player1_angle_deg - 65)
-        player1_angle_delta = 0
-
-    # Player 2
-    if player2_y - players_speed > targetY:
-        player2_y += player2_y_change + gravity
-        player2_x = ((player2_y - c) / a) ** 0.5 + b  # paraboloid movement
-    else:
-        player2_y += gravity
-        flag_game_over = True
-        game_over()
-
-    if player2_y <= 0:
-        player2_y = 0
-    elif player2_y > window_height - player2_img.get_height() // 2:
-        player2_y = window_height - player2_img.get_height() // 2
-
-    player2_angle_rad = np.arctan(2 * a * (player2_x - b))  # tan(angle) = y' = (a(x-b)^2)' = 2a(x-b)
-    player2_angle_delta = player2_angle_deg - np.degrees(player2_angle_rad)
-    player2_angle_delta = int(player2_angle_delta)
-    if np.abs(player2_angle_delta) > 1:
-        player2_angle_deg -= player2_angle_delta
-        player2_img_rotated = pg.transform.rotate(player2_img, -player2_angle_deg + 65)
-        player2_angle_delta = 0
+                player2.stop()
 
     # Collision
     collision = is_collision(targetX, targetY, bulletX, bulletY)
@@ -252,8 +180,8 @@ while running:
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
-    player(player1_x, player1_y, player1_img_rotated)
-    player(player2_x, player2_y, player2_img_rotated)
+    player1.update()
+    player2.update()
     show_score(score_x, score_y)
     pg.display.update()
     fpsClock.tick(FPS)
