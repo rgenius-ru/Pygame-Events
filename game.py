@@ -58,3 +58,12 @@ class Game:
         :return:
         """
         self.game_over_text()
+
+    # # Collision
+    # collision = game1.is_collision(target1.center_x, target1.center_y, bulletX, bulletY)
+    # if collision:
+    #     explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
+    #     explosionSound.play()
+    #     bulletY = 480
+    #     bullet_state = "ready"
+    #     game1.score_value += 1
