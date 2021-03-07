@@ -9,21 +9,17 @@ from screen import Screen
 from game import Game
 from target import Target
 
-
 # Initialize the pygame
 pg.mixer.pre_init(frequency=44100)
 pg.init()
 pg.mixer.init(frequency=44100)
 
-
 screen1 = Screen(resolution_id=3)
 game1 = Game(screen1)
 target1 = Target(screen1)
 
-
 track1 = Track('left', x1=target1.center_x, y1=target1.center_y, x2=20, y2=screen1.height)
 track2 = Track('right', x1=target1.center_x, y1=target1.center_y, x2=20, y2=screen1.height)
-
 
 player1 = Player(pg.image.load('Media/Images/player.png'),
                  scr=screen1.screen,
@@ -31,17 +27,16 @@ player1 = Player(pg.image.load('Media/Images/player.png'),
                  x=20,
                  y=screen1.height,
                  gravity=game1.gravity,
-                 speed=screen1.height/120
+                 speed=screen1.height / 120
                  )
 player2 = Player(pg.image.load('Media/Images/player.png'),
                  scr=screen1.screen,
                  track=track2,
-                 x=screen1.width-20,
+                 x=screen1.width - 20,
                  y=screen1.height,
                  gravity=game1.gravity,
-                 speed=screen1.height/120
+                 speed=screen1.height / 120
                  )
-
 
 # Frames per second setting
 FPS = 30
@@ -101,6 +96,19 @@ while running:
     pg.draw.circle(game1.screen.screen, (0, 200, 0), (target1.center_x, target1.center_y), radius=60, width=2)
     pg.draw.circle(game1.screen.screen, (220, 0, 0), (player1.x, player1.y), radius=20, width=2)
     pg.draw.circle(game1.screen.screen, (220, 0, 0), (player2.x, player2.y), radius=20, width=2)
+
+    w = player1.img_rotated.get_width()
+    h = player1.img_rotated.get_height()
+    x = player1.x - w // 2
+    y = player1.y - h // 2
+    pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
+
+    w = player2.img_rotated.get_width()
+    h = player2.img_rotated.get_height()
+    x = player2.x - w // 2
+    y = player2.y - h // 2
+    pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
+
     draw_track(track1)
     draw_track(track2)
     pg.display.update()

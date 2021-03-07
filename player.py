@@ -33,8 +33,8 @@ class Player:
 
         if self._y <= 0:
             self._y = 0
-        elif self._y > self.screen.get_height() - self.img.get_height():
-            self._y = self.screen.get_height() - self.img.get_height()
+        elif self._y > self.screen.get_height() - self.img_rotated.get_height():
+            self._y = self.screen.get_height() - self.img_rotated.get_height()
 
         angle_delta = self.angle_deg - self.track.tangent_angle(self._x)
         angle_delta = int(angle_delta)
