@@ -1,4 +1,3 @@
-import math
 # import random
 import pygame as pg
 # import numpy as np
@@ -6,22 +5,19 @@ import pygame as pg
 from paraboloidTrack import Track
 from player import Player
 from screen import Screen
+from game import Game
 
 # Initialize the pygame
 pg.mixer.pre_init(frequency=44100)
 pg.init()
 pg.mixer.init(frequency=44100)
 
-FPS = 30  # frames per second setting
-fpsClock = pg.time.Clock()
 
 screen1 = Screen(Screen.resolution_list[0])
+game1 = Game(screen1)
 
-# Game
-flag_game_over = False
-
-# Gravity
-gravity = 1 * screen1.height / 600
+FPS = 30  # frames per second setting
+fpsClock = pg.time.Clock()
 
 # Players speed
 players_speed = 5 * screen1.height / 600
@@ -54,14 +50,14 @@ player1 = Player(pg.image.load('Media/Images/player.png'),
                  track=track1,
                  x=20,
                  y=screen1.height,
-                 gravity=gravity
+                 gravity=game1.gravity
                  )
 player2 = Player(pg.image.load('Media/Images/player.png'),
                  scr=screen1.screen,
                  track=track2,
                  x=screen1.width-20,
                  y=screen1.height,
-                 gravity=gravity
+                 gravity=game1.gravity
                  )
 
 
@@ -77,27 +73,6 @@ bulletX_change = 0
 bulletY_change = 10
 bullet_state = "ready"
 
-# Score
-
-score_value = 0
-font = pg.font.Font('freesansbold.ttf', 32)
-
-score_x = 10
-score_y = 10
-
-# Game Over
-over_font = pg.font.Font('freesansbold.ttf', 64)
-
-
-def show_score(x, y):
-    score = font.render("Score : " + str(score_value), True, (255, 255, 255))
-    screen1.screen.blit(score, (x, y))
-
-
-def game_over_text():
-    over_text = over_font.render("GAME OVER", True, (255, 255, 255))
-    screen1.screen.blit(over_text, (200, 250))
-
 
 def target(x, y):
     x = x - targetImg.get_width() // 2
@@ -111,31 +86,9 @@ def fire_bullet(x, y):
     screen1.screen.blit(bulletImg, (x + 16, y + 10))
 
 
-def is_collision(enemy_x, enemy_y, bullet_x, bullet_y):
-    distance = math.sqrt(math.pow(enemy_x - bullet_x, 2) + (math.pow(enemy_y - bullet_y, 2)))
-    if distance < 27:
-        return True
-    else:
-        return False
-
-
-def round_over():
-    pass
-
-
-def game_over():
-    """
-    Game Over
-    :return:
-    """
-    game_over_text()
-
-
 # Game Loop
 running = True
 while running:
-    # RGB = Red, Green, Blue
-    screen1.screen.fill((0, 0, 0))
     # Background Image
     screen1.screen.blit(background, (0, 0))
     for event in pg.event.get():
@@ -161,13 +114,13 @@ while running:
                 player2.stop()
 
     # Collision
-    collision = is_collision(targetX, targetY, bulletX, bulletY)
+    collision = game1.is_collision(targetX, targetY, bulletX, bulletY)
     if collision:
         explosionSound = pg.mixer.Sound("Media/Sounds/explosion.wav")
         explosionSound.play()
         bulletY = 480
         bullet_state = "ready"
-        score_value += 1
+        game1.score_value += 1
 
     target(targetX, targetY)
 
@@ -182,6 +135,6 @@ while running:
 
     player1.update()
     player2.update()
-    show_score(score_x, score_y)
+    game1.show_score()
     pg.display.update()
     fpsClock.tick(FPS)

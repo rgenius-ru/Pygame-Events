@@ -8,3 +8,5 @@ class Screen:
     def __init__(self, resolution):
         self.width, self.height = resolution
         self.screen = set_mode((self.width, self.height))
+        # RGB = Red, Green, Blue
+        self.screen.fill((0, 0, 0))
