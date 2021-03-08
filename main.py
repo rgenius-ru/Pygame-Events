@@ -9,14 +9,15 @@ from player import Player
 from screen import Screen
 from game import Game
 from target import Target
+from button import Button
 
 # Initialize the pygame
 pg.mixer.pre_init(frequency=44100)
 pg.init()
 pg.mixer.init(frequency=44100)
 
-screen1 = Screen(resolution_id=0)
-screen2 = Screen(resolution_id=0)
+screen1 = Screen(resolution_id=3)
+screen2 = Screen(resolution_id=3)
 
 game1 = Game(screen1, screen2)
 game1.init_screen1()
@@ -106,59 +107,64 @@ def game1_screen2_loop():
 
 def text1_update(_events):
     x, y, w, h = 20, 20, 300, 40
-    draw_rect(x, y, w, h, game1.screen1.screen)
+    rect = draw_rect(x, y, w, h, game1.screen1.screen)
 
-    if text_input1.focused:
-        text_input1.update(_events)
-        text1_position = (x + 5, y + 5)
-        game1.screen1.screen.blit(text_input1.get_surface(), text1_position)
+    text_input1.update(_events)
+    text1_position = (x + 5, y + 5)
+    game1.screen1.screen.blit(text_input1.get_surface(), text1_position)
+
+    return rect
 
 
 def text2_update(_events):
     w, h = 300, 40
     x, y = game1.screen1.width - w - 20, 20
-    draw_rect(x, y, w, h, game1.screen1.screen)
+    rect = draw_rect(x, y, w, h, game1.screen1.screen)
 
-    if text_input2.focused:
-        text_input2.update(_events)
-        text2_position = (x + 5, y + 5)
-        game1.screen1.screen.blit(text_input2.get_surface(), text2_position)
+    text_input2.update(_events)
+    text2_position = (x + 5, y + 5)
+    game1.screen1.screen.blit(text_input2.get_surface(), text2_position)
+
+    return rect
 
 
 def draw_rect(x, y, w, h, screen):
-    pg.draw.rect(screen, (150, 150, 150), pg.Rect(x, y, w, h), width=1)
+    return pg.draw.rect(screen, (150, 150, 150), pg.Rect(x, y, w, h), width=1)
 
 
-def button(screen, position, text):
-    button_width = 310
-    button_height = 65
-    left = position[0] - button_width // 2
-    top = position[1] - button_height // 2
+left = game1.screen1.width // 2
+top = game1.screen1.height
 
-    pg.draw.rect(screen, (100, 100, 100), (left, top, button_width, button_height))  # TODO change it an blit image
-    font = pg.font.Font('freesansbold.ttf', 32)
-    text_render = font.render(text, True,  (250, 250, 250))
-    return screen.blit(text_render, (left + 50, top + 10))
+button_run = Button(game1.screen1.screen, 'Media/Images/button_run.png', (left, top - 160), 'Играть')
+button_quit = Button(game1.screen1.screen, 'Media/Images/button_quit.png', (left, top - 80), 'Выход')
 
 
 def game1_screen1_loop():
     game1.screen1.screen.blit(game1.background1, (0, 0))
 
-    button_1 = button(game1.screen1.screen, (game1.screen1.width // 2, game1.screen1.height - 160), 'Играть')
-    button_2 = button(game1.screen1.screen, (game1.screen1.width // 2, game1.screen1.height - 80), 'Выход')
+    button_run.update()
+    button_quit.update()
 
     events = pg.event.get()
+
+    text_player1 = text1_update(events)
+    text_player2 = text2_update(events)
+
     for event in events:
         if event.type == pg.QUIT:
             return False
         elif event.type == pg.MOUSEBUTTONDOWN:
-            if button_1.collidepoint(pg.mouse.get_pos()):
+            mouse_position = pg.mouse.get_pos()
+            if button_run.collide_point(mouse_position):
                 return True
-            elif button_2.collidepoint(pg.mouse.get_pos()):
+            elif button_quit.collide_point(mouse_position):
                 return False
-
-    text1_update(events)
-    text2_update(events)
+            elif text_player1.collidepoint(mouse_position):
+                text_input1.focused = True
+                text_input2.focused = False
+            elif text_player2.collidepoint(mouse_position):
+                text_input2.focused = True
+                text_input1.focused = False
 
     return True
 
@@ -167,7 +173,7 @@ game1_screen = 1
 game1.players_names = player1.name, player2.name
 
 # Create TextInput-object
-text_input1 = TextInput(focused=False)
+text_input1 = TextInput(focused=True)
 text_input2 = TextInput(focused=False)
 
 # Game Loop
