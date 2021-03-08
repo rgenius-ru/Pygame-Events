@@ -129,13 +129,33 @@ def draw_rect(x, y, w, h, screen):
     pg.draw.rect(screen, (150, 150, 150), pg.Rect(x, y, w, h), width=1)
 
 
+def button(screen, position, text):
+    button_width = 310
+    button_height = 65
+    left = position[0] - button_width // 2
+    top = position[1] - button_height // 2
+
+    pg.draw.rect(screen, (100, 100, 100), (left, top, button_width, button_height))  # TODO change it an blit image
+    font = pg.font.Font('freesansbold.ttf', 32)
+    text_render = font.render(text, True,  (250, 250, 250))
+    return screen.blit(text_render, (left + 50, top + 10))
+
+
 def game1_screen1_loop():
     game1.screen1.screen.blit(game1.background1, (0, 0))
+
+    button_1 = button(game1.screen1.screen, (game1.screen1.width // 2, game1.screen1.height - 160), 'Играть')
+    button_2 = button(game1.screen1.screen, (game1.screen1.width // 2, game1.screen1.height - 80), 'Выход')
 
     events = pg.event.get()
     for event in events:
         if event.type == pg.QUIT:
             return False
+        elif event.type == pg.MOUSEBUTTONDOWN:
+            if button_1.collidepoint(pg.mouse.get_pos()):
+                return True
+            elif button_2.collidepoint(pg.mouse.get_pos()):
+                return False
 
     text1_update(events)
     text2_update(events)
@@ -149,7 +169,6 @@ game1.players_names = player1.name, player2.name
 # Create TextInput-object
 text_input1 = TextInput(focused=False)
 text_input2 = TextInput(focused=False)
-
 
 # Game Loop
 running = True
