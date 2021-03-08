@@ -22,6 +22,7 @@ track1 = Track('left', x1=target1.center_x, y1=target1.center_y, x2=20, y2=scree
 track2 = Track('right', x1=target1.center_x, y1=target1.center_y, x2=20, y2=screen1.height)
 
 player1 = Player(pg.image.load('Media/Images/player.png'),
+                 name='Игрок 1',
                  scr=screen1.screen,
                  track=track1,
                  x=20,
@@ -30,6 +31,7 @@ player1 = Player(pg.image.load('Media/Images/player.png'),
                  speed=screen1.height / 120
                  )
 player2 = Player(pg.image.load('Media/Images/player.png'),
+                 name='Игрок 2',
                  scr=screen1.screen,
                  track=track2,
                  x=screen1.width - 20,
@@ -80,18 +82,20 @@ def game1_screen1_loop():
         collision_player2 = is_collision(target1.center_x, target1.center_y, player2.x, player2.y)
 
         if collision_player1 or collision_player2:
-            explosion_sound = pg.mixer.Sound("Media/Sounds/explosion.wav")
-            explosion_sound.play()
-            game1.round_over()
-
             if collision_player1:
                 player2.stop()
                 game1.score1_value += 1
-                game1.win_round_player = 1
+                game1.win_round_player = player1
             if collision_player2:
                 player1.stop()
                 game1.score2_value += 1
-                game1.win_round_player = 2
+                game1.win_round_player = player2
+
+            explosion_sound = pg.mixer.Sound("Media/Sounds/explosion.wav")
+            explosion_sound.play()
+            game1.round_over()
+    # else:
+    #     game1.round_over()
 
     return True
 

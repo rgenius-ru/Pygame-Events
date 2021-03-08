@@ -22,7 +22,10 @@ class Game:
         self.score2_y = 10
 
         # Game Over
-        self.over_font = font.Font('freesansbold.ttf', 64)
+        self.game_over_font = font.Font('freesansbold.ttf', 64)
+
+        # Round Over
+        self.round_over_font = font.Font('freesansbold.ttf', 48)
 
         # Game
         self.flag_game_over = False
@@ -42,11 +45,6 @@ class Game:
         icon = image.load('Media/Images/ufo.png')
         display.set_icon(icon)
 
-    def update(self):
-        self.screen.screen.blit(self.background, (0, 0))
-        self.show_score1()
-        self.show_score2()
-
     def show_score1(self):
         score = self.font.render("Score : " + str(self.score1_value), True, (255, 255, 255))
         self.screen.screen.blit(score, (self.score1_x, self.score1_y))
@@ -56,11 +54,18 @@ class Game:
         self.screen.screen.blit(score, (self.score2_x - score.get_width(), self.score2_y))
 
     def game_over_text(self):
-        over_text = self.over_font.render("GAME OVER", True, (255, 255, 255))
+        over_text = self.game_over_font.render("GAME OVER", True, (255, 255, 255))
         self.screen.screen.blit(over_text, (200, 250))
+
+    def round_over_text(self):
+        over_text = self.round_over_font.render(f'Победил {self.win_round_player.name}', True, (255, 255, 255))
+        x = self.screen.width // 2 - over_text.get_width() // 2
+        y = self.screen.height - over_text.get_height() - 100
+        self.screen.screen.blit(over_text, (x, y))
 
     def round_over(self):
         self.is_round_over = True
+        self.round_over_text()
 
     def game_over(self):
         """
@@ -69,3 +74,10 @@ class Game:
         """
         self.is_game_over = True
         self.game_over_text()
+
+    def update(self):
+        self.screen.screen.blit(self.background, (0, 0))
+        self.show_score1()
+        self.show_score2()
+        if self.is_round_over:
+            self.round_over_text()
