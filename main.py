@@ -40,6 +40,8 @@ player2 = Player(pg.image.load('Media/Images/player.png'),
                  speed=screen1.height / 120
                  )
 
+game1.players_names = player1.name, player2.name
+
 # Frames per second setting
 FPS = 30
 fpsClock = pg.time.Clock()

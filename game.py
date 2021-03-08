@@ -9,6 +9,7 @@ class Game:
 
         self.win_round_player = None
         self.win_game_player = None
+        self.players_names = []
 
         # Score
         self.font = font.Font('freesansbold.ttf', 32)
@@ -46,15 +47,18 @@ class Game:
         display.set_icon(icon)
 
     def show_score1(self):
-        name = self.font.render("Игрок 1", True, (255, 255, 255))
+        name = self.font.render(self.players_names[0], True, (200, 200, 0))
         self.screen.screen.blit(name, (self.score1_x, self.score1_y))
 
         score = self.font.render("Счёт : " + str(self.score1_value), True, (255, 255, 255))
         self.screen.screen.blit(score, (self.score1_x, self.score1_y + name.get_height() + 5))
 
     def show_score2(self):
+        name = self.font.render(self.players_names[1], True, (200, 200, 0))
+        self.screen.screen.blit(name, (self.score2_x - name.get_width(), self.score2_y))
+
         score = self.font.render("Счёт : " + str(self.score2_value), True, (255, 255, 255))
-        self.screen.screen.blit(score, (self.score2_x - score.get_width(), self.score2_y))
+        self.screen.screen.blit(score, (self.score2_x - score.get_width(), self.score2_y + name.get_height() + 5))
 
     def game_over_text(self):
         over_text = self.game_over_font.render("GAME OVER", True, (255, 255, 255))
