@@ -15,7 +15,10 @@ pg.init()
 pg.mixer.init(frequency=44100)
 
 screen1 = Screen(resolution_id=0)
-game1 = Game(screen1)
+screen2 = Screen(resolution_id=0)
+
+game1 = Game(screen1, screen2)
+game1.init_screen1()
 target1 = Target(screen1)
 
 track1 = Track('left', x1=target1.center_x, y1=target1.center_y, x2=20, y2=screen1.height)
@@ -40,8 +43,6 @@ player2 = Player(pg.image.load('Media/Images/player.png'),
                  speed=screen1.height / 120
                  )
 
-game1.players_names = player1.name, player2.name
-
 # Frames per second setting
 FPS = 30
 fpsClock = pg.time.Clock()
@@ -57,10 +58,10 @@ def is_collision(obj1_x, obj1_y, obj2_x, obj2_y):
 
 def draw_track(track):
     for y in range(track.y_min, track.y_max):
-        pg.draw.circle(game1.screen.screen, (0, 0, 220), (track.get_x(y), y), radius=1, width=1)
+        pg.draw.circle(game1.screen2.screen, (0, 0, 220), (track.get_x(y), y), radius=1, width=1)
 
 
-def game1_screen1_loop():
+def game1_screen2_loop():
     for event in pg.event.get():
         if event.type == pg.QUIT:
             return False
@@ -102,7 +103,7 @@ def game1_screen1_loop():
     return True
 
 
-def game1_screen2_loop():
+def game1_screen1_loop():
     for event in pg.event.get():
         if event.type == pg.QUIT:
             return False
@@ -111,7 +112,7 @@ def game1_screen2_loop():
 
 
 game1_screen = 1
-
+game1.players_names = player1.name, player2.name
 
 # Game Loop
 running = True
@@ -120,32 +121,31 @@ while running:
         running = game1_screen1_loop()
     elif game1_screen == 2:
         running = game1_screen2_loop()
+        game1.update()  # Game update first
+        target1.update()  # Second update target
+        player1.update()
+        player2.update()
 
-    game1.update()  # Game update first
-    target1.update()  # Second update target
-    player1.update()
-    player2.update()
-
-    # ***************** Debug *********************
-    # pg.draw.circle(game1.screen.screen, (0, 200, 0), (target1.center_x, target1.center_y), radius=60, width=2)
-    # pg.draw.circle(game1.screen.screen, (220, 0, 0), (player1.x, player1.y), radius=20, width=2)
-    # pg.draw.circle(game1.screen.screen, (220, 0, 0), (player2.x, player2.y), radius=20, width=2)
-    #
-    # w = player1.img_rotated.get_width()
-    # h = player1.img_rotated.get_height()
-    # x = player1.x - w // 2
-    # y = player1.y - h // 2
-    # pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
-    #
-    # w = player2.img_rotated.get_width()
-    # h = player2.img_rotated.get_height()
-    # x = player2.x - w // 2
-    # y = player2.y - h // 2
-    # pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
-    #
-    # draw_track(track1)
-    # draw_track(track2)
-    # *************** END * Debug *****************
+        # ***************** Debug *********************
+        # pg.draw.circle(game1.screen.screen, (0, 200, 0), (target1.center_x, target1.center_y), radius=60, width=2)
+        # pg.draw.circle(game1.screen.screen, (220, 0, 0), (player1.x, player1.y), radius=20, width=2)
+        # pg.draw.circle(game1.screen.screen, (220, 0, 0), (player2.x, player2.y), radius=20, width=2)
+        #
+        # w = player1.img_rotated.get_width()
+        # h = player1.img_rotated.get_height()
+        # x = player1.x - w // 2
+        # y = player1.y - h // 2
+        # pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
+        #
+        # w = player2.img_rotated.get_width()
+        # h = player2.img_rotated.get_height()
+        # x = player2.x - w // 2
+        # y = player2.y - h // 2
+        # pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
+        #
+        # draw_track(track1)
+        # draw_track(track2)
+        # *************** END * Debug *****************
 
     pg.display.update()
     fpsClock.tick(FPS)
