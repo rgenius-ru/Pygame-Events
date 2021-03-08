@@ -46,11 +46,14 @@ class Game:
         display.set_icon(icon)
 
     def show_score1(self):
-        score = self.font.render("Score : " + str(self.score1_value), True, (255, 255, 255))
-        self.screen.screen.blit(score, (self.score1_x, self.score1_y))
+        name = self.font.render("Игрок 1", True, (255, 255, 255))
+        self.screen.screen.blit(name, (self.score1_x, self.score1_y))
+
+        score = self.font.render("Счёт : " + str(self.score1_value), True, (255, 255, 255))
+        self.screen.screen.blit(score, (self.score1_x, self.score1_y + name.get_height() + 5))
 
     def show_score2(self):
-        score = self.font.render("Score : " + str(self.score2_value), True, (255, 255, 255))
+        score = self.font.render("Счёт : " + str(self.score2_value), True, (255, 255, 255))
         self.screen.screen.blit(score, (self.score2_x - score.get_width(), self.score2_y))
 
     def game_over_text(self):
