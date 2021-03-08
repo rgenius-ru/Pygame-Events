@@ -24,12 +24,13 @@ class TextInput:
             font_family="",
             font_size=35,
             anti_alias=True,
-            text_color=(0, 0, 0),
-            cursor_color=(0, 0, 1),
+            text_color=(20, 20, 20),
+            cursor_color=(25, 25, 25),
             repeat_keys_initial_ms=400,
             repeat_keys_interval_ms=35,
-            max_string_length=-1,
-            password=False):
+            max_string_length=16,
+            password=False,
+            focused=False):
         """
         :param initial_string: Initial text to be displayed
         :param font_family: name or list of names for font (see pygame.font.match_font for precise format)
@@ -43,6 +44,7 @@ class TextInput:
         """
 
         # Text related vars:
+        self.focused = focused
         self.anti_alias = anti_alias
         self.text_color = text_color
         self.font_size = font_size

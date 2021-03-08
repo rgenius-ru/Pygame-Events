@@ -37,7 +37,8 @@ class Game:
         self.gravity = None
 
         # Background
-        self.background = None
+        self.background2 = None
+        self.background1 = None
 
         # Caption and Icon
         display.set_caption("Space Invader")
@@ -76,14 +77,15 @@ class Game:
         self.gravity = 1 * self.screen2.height / 600
 
         # Background
-        self.background = image.load('Media/Images/background2.png')
+        self.background2 = image.load('Media/Images/background2.png')
 
         # Sound
         mixer.music.load("Media/Sounds/background.wav")
         mixer.music.play(-1)
 
     def init_screen1(self):
-        pass
+        # Background
+        self.background1 = image.load('Media/Images/yellow-lights-background.jpg')
 
     def show_score1(self):
         name = self.font.render(self.players_names[0], True, (200, 200, 0))
@@ -122,7 +124,7 @@ class Game:
         self.game_over_text()
 
     def update(self):
-        self.screen2.screen.blit(self.background, (0, 0))
+        self.screen2.screen.blit(self.background2, (0, 0))
         self.show_score1()
         self.show_score2()
         if self.is_round_over:

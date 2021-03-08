@@ -1,5 +1,6 @@
 import pygame as pg
 import math
+from pygame_textinput import TextInput
 # import random
 # import numpy as np
 
@@ -103,16 +104,52 @@ def game1_screen2_loop():
     return True
 
 
+def text1_update(_events):
+    x, y, w, h = 20, 20, 300, 40
+    draw_rect(x, y, w, h, game1.screen1.screen)
+
+    if text_input1.focused:
+        text_input1.update(_events)
+        text1_position = (x + 5, y + 5)
+        game1.screen1.screen.blit(text_input1.get_surface(), text1_position)
+
+
+def text2_update(_events):
+    w, h = 300, 40
+    x, y = game1.screen1.width - w - 20, 20
+    draw_rect(x, y, w, h, game1.screen1.screen)
+
+    if text_input2.focused:
+        text_input2.update(_events)
+        text2_position = (x + 5, y + 5)
+        game1.screen1.screen.blit(text_input2.get_surface(), text2_position)
+
+
+def draw_rect(x, y, w, h, screen):
+    pg.draw.rect(screen, (150, 150, 150), pg.Rect(x, y, w, h), width=1)
+
+
 def game1_screen1_loop():
-    for event in pg.event.get():
+    game1.screen1.screen.blit(game1.background1, (0, 0))
+
+    events = pg.event.get()
+    for event in events:
         if event.type == pg.QUIT:
             return False
+
+    text1_update(events)
+    text2_update(events)
 
     return True
 
 
 game1_screen = 1
 game1.players_names = player1.name, player2.name
+
+# Create TextInput-object
+text_input1 = TextInput(focused=False)
+text_input2 = TextInput(focused=False)
+
 
 # Game Loop
 running = True
