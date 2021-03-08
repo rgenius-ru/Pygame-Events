@@ -41,7 +41,7 @@ class Game:
         self.background1 = None
 
         # Caption and Icon
-        display.set_caption("Space Invader")
+        display.set_caption("Игра Трясунчик")
         icon = image.load('Media/Images/ufo.png')
         display.set_icon(icon)
 
