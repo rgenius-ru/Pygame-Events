@@ -7,6 +7,9 @@ class Game:
         self.is_round_over = False
         self.is_game_over = False
 
+        self.win_round_player = None
+        self.win_game_player = None
+
         # Score
         self.font = font.Font('freesansbold.ttf', 32)
         self.score1_value = 0
