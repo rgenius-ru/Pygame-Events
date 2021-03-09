@@ -129,7 +129,8 @@ def text2_update(_events):
 
 
 def draw_rect(x, y, w, h, screen):
-    return pg.draw.rect(screen, (150, 150, 150), pg.Rect(x, y, w, h), width=1)
+    pg.draw.rect(screen, (140, 140, 140), pg.Rect(x, y, w, h), width=3, border_radius=5)
+    return pg.draw.rect(screen, (240, 240, 240), pg.Rect(x+1, y+1, w-2, h-2), width=0, border_radius=5)
 
 
 left = game1.screen1.width // 2
