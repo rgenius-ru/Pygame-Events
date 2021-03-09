@@ -85,7 +85,7 @@ class Game:
 
     def init_screen1(self):
         # Background
-        self.background1 = image.load('Media/Images/yellow-lights-background.jpg')
+        self.background1 = image.load('Media/Images/background2.jpg')
 
     def show_score1(self):
         name = self.font.render(self.players_names[0], True, (200, 200, 0))
