@@ -15,12 +15,50 @@ Program:
                 img2_player2
                 choice_arrow
             choice_field2
+                left_arrow
+                right_arrow
+                img1_player1
+                img2_player2
+                choice_arrow
             button_run
+                is_focused
+                img
+                text
             button_quit
+                is_focused
+                img
+                text
         screen2_game
             resolution
             window_name
+            icon_img
             is_fullscreen
             background
+            sound_background
+            player1
+                name
+                img
+            player2
+                name
+                img
+            score_player1
+                value
+                x
+                y
+                font
+            score_player2
+                value
+                x
+                y
+                font
+            track_player1
+            track_player2
+            target
+            gravity
+            round_now_count
+            is_round_over
+            is_game_over
+            win_round_player
+            win_game_player
 
     game2 - Microphone
