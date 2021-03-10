@@ -1,0 +1,26 @@
+Program:
+    game1 - Movement
+        active_screen
+        screen1_choice
+            resolution
+            window_name
+            is_fullscreen
+            background
+            text_input1
+            text_input2
+            choice_field1
+                left_arrow
+                right_arrow
+                img1_player1
+                img2_player2
+                choice_arrow
+            choice_field2
+            button_run
+            button_quit
+        screen2_game
+            resolution
+            window_name
+            is_fullscreen
+            background
+
+    game2 - Microphone
