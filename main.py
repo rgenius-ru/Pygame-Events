@@ -157,6 +157,10 @@ def game1_screen1_loop():
         elif event.type == pg.MOUSEBUTTONDOWN:
             mouse_position = pg.mouse.get_pos()
             if button_run.collide_point(mouse_position):
+                global game1_screen
+                game1_screen = 2
+                players_names = text_input1.get_text(), text_input2.get_text()
+                game1.init_screen2(players_names)
                 return True
             elif button_quit.collide_point(mouse_position):
                 return False

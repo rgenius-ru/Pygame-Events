@@ -45,13 +45,13 @@ class Game:
         icon = image.load('Media/Images/ufo.png')
         display.set_icon(icon)
 
-    def init_screen2(self):
+    def init_screen2(self, players_names):
         self.is_round_over = False
         self.is_game_over = False
 
         self.win_round_player = None
         self.win_game_player = None
-        self.players_names = []
+        self.players_names = players_names
 
         # Score
         self.font = font.Font('freesansbold.ttf', 32)
