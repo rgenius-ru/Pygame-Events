@@ -161,8 +161,7 @@ def choice_group1_update(_events, input_crns, choice_crns):
 
     if select_player_left:
         if select_player_left == 1:
-            selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][
-                1].get_width() - 35
+            selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[couples_id_left][1].get_width() - 35
         else:
             selected_player_x = choice_crns.x + choice_left_arrow_img.get_width() + 35
 
@@ -178,15 +177,15 @@ def choice_group1_update(_events, input_crns, choice_crns):
     rect_couple_player1 = game1.screen1.screen.blit(
         couples_images[couples_id_left][0],
         (
-            choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35,
-            choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
+            choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[couples_id_left][1].get_width() - 35,
+            choice_crns.y + choice_crns.h // 2 - couples_images[couples_id_left][1].get_height() // 2
         )
     )
     rect_couple_player2 = game1.screen1.screen.blit(
         couples_images[couples_id_left][1],
         (
             choice_crns.x + choice_left_arrow_img.get_width() + 35,
-            choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
+            choice_crns.y + choice_crns.h // 2 - couples_images[couples_id_left][1].get_height() // 2
         )
     )
 
@@ -217,7 +216,7 @@ def choice_group2_update(_events, input_crns, choice_crns):
 
     if select_player_right:
         if select_player_right == 1:
-            selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35
+            selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[couples_id_right][1].get_width() - 35
         else:
             selected_player_x = choice_crns.x + choice_left_arrow_img.get_width() + 35
 
@@ -233,15 +232,15 @@ def choice_group2_update(_events, input_crns, choice_crns):
     rect_couple_player1 = game1.screen1.screen.blit(
         couples_images[couples_id_right][0],
         (
-            choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35,
-            choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
+            choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[couples_id_right][1].get_width() - 35,
+            choice_crns.y + choice_crns.h // 2 - couples_images[couples_id_right][1].get_height() // 2
         )
     )
     rect_couple_player2 = game1.screen1.screen.blit(
         couples_images[couples_id_right][1],
         (
             choice_crns.x + choice_left_arrow_img.get_width() + 35,
-            choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
+            choice_crns.y + choice_crns.h // 2 - couples_images[couples_id_right][1].get_height() // 2
         )
     )
 
