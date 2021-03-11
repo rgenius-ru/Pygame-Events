@@ -253,6 +253,12 @@ def game1_screen1_loop():
     button_run.update()
     button_quit.update()
 
+    global select_player_left, select_player_right
+    if select_player_left and select_player_right:
+        button_run.is_active = True
+    else:
+        button_run.is_active = False
+
     events = pg.event.get()
 
     text_rect_player1, player1_r_left_arrow, player1_r_right_arrow, player1_r_select_arrow, player1_r_couple_player1, player1_r_couple_player2 = choice_group1_update(events, input1_corners, choice1_corners)
@@ -263,7 +269,7 @@ def game1_screen1_loop():
             return False
         elif event.type == pg.MOUSEBUTTONDOWN:
             mouse_position = pg.mouse.get_pos()
-            global couples_id_left, couples_id_right, select_player_left, select_player_right
+            global couples_id_left, couples_id_right
             if button_run.collide_point(mouse_position):
                 global game1_screen
                 game1_screen = 2
@@ -327,8 +333,20 @@ def game1_screen1_loop():
 left = game1.screen1.width // 2
 top = game1.screen1.height
 
-button_run = Button(game1.screen1.screen, 'Media/Images/button_run.png', (left, top - 160), 'Играть')
-button_quit = Button(game1.screen1.screen, 'Media/Images/button_quit.png', (left, top - 80), 'Выход')
+button_run = Button(
+    game1.screen1.screen,
+    (left, top - 160),
+    'Играть',
+    'Media/Images/button_run.png',
+    'Media/Images/button_run_inactive.png'
+)
+
+button_quit = Button(
+    game1.screen1.screen,
+    (left, top - 80),
+    'Выход',
+    'Media/Images/button_quit.png'
+)
 
 couples_images = couples_img_load('Media/Images/Players/')
 
