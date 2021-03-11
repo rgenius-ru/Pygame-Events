@@ -8,8 +8,8 @@ class Bullet:
         Fire - The bullet is currently moving
         """
         self.screen = screen
-        self.sound = mixer.Sound("Media/Sounds/laser.wav")
-        self.img = image.load('Media/Images/bullet.png')
+        self.sound = mixer.Sound("../Media/Sounds/laser.wav")
+        self.img = image.load('../Media/Images/bullet.png')
         self.x = 0
         self.y = 480
         self.x_change = 0

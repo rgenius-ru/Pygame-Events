@@ -1,15 +1,15 @@
 import pygame as pg
 import math
-from pygame_textinput import TextInput
+from Modules.pygame_textinput import TextInput
 # import random
 # import numpy as np
 
-from paraboloidTrack import Track
-from player import Player
-from screen import Screen
-from game import Game
-from target import Target
-from button import Button
+from Modules.paraboloidTrack import Track
+from Modules.player import Player
+from Modules.screen import Screen
+from Modules.game import Game
+from Modules.target import Target
+from Modules.button import Button
 
 # Initialize the pygame
 pg.mixer.pre_init(frequency=44100)
