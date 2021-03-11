@@ -11,12 +11,21 @@ from Modules.game import Game
 from Modules.target import Target
 from Modules.button import Button
 
+
+class Corners:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+
 # Initialize the pygame
 pg.mixer.pre_init(frequency=44100)
 pg.init()
 pg.mixer.init(frequency=44100)
 
-resolution_id = 0
+resolution_id = 1
 screen1 = Screen(resolution_id)
 screen2 = Screen(resolution_id)
 
@@ -106,38 +115,80 @@ def game1_screen2_loop():
     return True
 
 
-def draw_choice_rect(x, y, w, h, screen):
-    return pg.draw.rect(screen, (140, 140, 140), pg.Rect(x, y, w, h), width=1, border_radius=5)
+def draw_choice_arrow(img, x, y, screen):
+    screen.blit(img, (x, y))
+    rect = pg.rect.Rect(x, y, img.get_width(), img.get_height())
+    return rect
 
 
-def draw_text_input_rect(x, y, w, h, screen):
-    pg.draw.rect(screen, (140, 140, 140), pg.Rect(x, y, w, h), width=3, border_radius=5)
-    return pg.draw.rect(screen, (240, 240, 240), pg.Rect(x+1, y+1, w-2, h-2), width=0, border_radius=5)
+def draw_choice_rect(crns, screen):
+    return pg.draw.rect(screen, (140, 140, 140), pg.Rect(crns.x, crns.y, crns.w, crns.h), width=1, border_radius=5)
 
 
-def choice_group1_update(_events):
-    x, y, w, h = 20, 20, 300, 40
-    draw_choice_rect(x - 5, y - 5 + h // 2, w + 70, h + 200, game1.screen1.screen)
-    rect = draw_text_input_rect(x, y, w, h, game1.screen1.screen)
+def draw_text_input_rect(crns, screen):
+    pg.draw.rect(screen, (140, 140, 140), pg.Rect(crns.x, crns.y, crns.w, crns.h), width=3, border_radius=5)
+    return pg.draw.rect(screen, (240, 240, 240), pg.Rect(crns.x+1, crns.y+1, crns.w-2, crns.h-2), width=0, border_radius=5)
+
+
+def choice_group1_update(_events, input_crns, choice_crns):
+    draw_choice_rect(choice_crns, game1.screen1.screen)
+    rect_input = draw_text_input_rect(input_crns, game1.screen1.screen)
 
     text_input1.update(_events)
-    text1_position = (x + 5, y + 5)
+    text1_position = (input_crns.x + 5, input_crns.y + 5)
     game1.screen1.screen.blit(text_input1.get_surface(), text1_position)
 
-    return rect
+    draw_choice_arrow(
+        choice_left_arrow_img,
+        choice_crns.x + 5,
+        choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
+        game1.screen1.screen
+    )
+    draw_choice_arrow(
+        choice_right_arrow_img,
+        choice_crns.x + choice_crns.w - choice_right_arrow_img.get_width() - 5,
+        choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
+        game1.screen1.screen
+    )
+    draw_choice_arrow(
+        choice_pointer_arrow_img,
+        choice_crns.x + choice_crns.w // 2 - choice_pointer_arrow_img.get_width() // 2 - 30,
+        choice_crns.y + choice_crns.h - choice_pointer_arrow_img.get_height() - 5,
+        game1.screen1.screen
+    )
+
+    return rect_input
 
 
-def choice_group2_update(_events):
-    w, h = 300, 40
-    x, y = game1.screen1.width - w - 20, 20
-    draw_choice_rect(x - 70, y - 5 + h // 2, w + 70 + 5, h + 200, game1.screen1.screen)
-    rect = draw_text_input_rect(x, y, w, h, game1.screen1.screen)
+def choice_group2_update(_events, input_crns, choice_crns):
+
+    draw_choice_rect(choice_crns, game1.screen1.screen)
+    rect_input = draw_text_input_rect(input_crns, game1.screen1.screen)
 
     text_input2.update(_events)
-    text2_position = (x + 5, y + 5)
+    text2_position = (input_crns.x + 5, input_crns.y + 5)
     game1.screen1.screen.blit(text_input2.get_surface(), text2_position)
 
-    return rect
+    draw_choice_arrow(
+        choice_left_arrow_img,
+        choice_crns.x + 5,
+        choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
+        game1.screen1.screen
+    )
+    draw_choice_arrow(
+        choice_right_arrow_img,
+        choice_crns.x + choice_crns.w - choice_right_arrow_img.get_width() - 5,
+        choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
+        game1.screen1.screen
+    )
+    draw_choice_arrow(
+        choice_pointer_arrow_img,
+        choice_crns.x + choice_crns.w // 2 - choice_pointer_arrow_img.get_width() // 2 - 30,
+        choice_crns.y + choice_crns.h - choice_pointer_arrow_img.get_height() - 5,
+        game1.screen1.screen
+    )
+
+    return rect_input
 
 
 left = game1.screen1.width // 2
@@ -155,8 +206,8 @@ def game1_screen1_loop():
 
     events = pg.event.get()
 
-    text_rect_player1 = choice_group1_update(events)
-    text_rect_player2 = choice_group2_update(events)
+    text_rect_player1 = choice_group1_update(events, input1_corners, choice1_corners)
+    text_rect_player2 = choice_group2_update(events, input2_corners, choice2_corners)
 
     for event in events:
         if event.type == pg.QUIT:
@@ -189,6 +240,30 @@ game1.players_names = player1.name, player2.name
 # Create TextInput-object
 text_input1 = TextInput(focused=True)
 text_input2 = TextInput(focused=False)
+
+choice_right_arrow_img = pg.image.load('./Media/Images/right_arrow.png')
+choice_left_arrow_img = pg.image.load('./Media/Images/left_arrow.png')
+choice_pointer_arrow_img = pg.image.load('./Media/Images/pointer_arrow.png')
+
+
+input1_corners = Corners(x=20, y=20, w=300, h=40)
+choice1_corners = Corners(
+    x=input1_corners.x - 5,
+    y=input1_corners.y - 5 + input1_corners.h // 2,
+    w=input1_corners.w + 70 + 5,
+    h=input1_corners.h + 200
+)
+
+
+w, h = 300, 40
+x, y = game1.screen1.width - w - 20, 20
+input2_corners = Corners(x=x, y=y, w=w, h=h)
+choice2_corners = Corners(
+    x=input2_corners.x - 70,
+    y=input2_corners.y - 5 + input2_corners.h // 2,
+    w=input2_corners.w + 70 + 5,
+    h=input2_corners.h + 200
+)
 
 # Game Loop
 running = True
