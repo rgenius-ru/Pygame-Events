@@ -115,6 +115,16 @@ def game1_screen2_loop():
     return True
 
 
+def couples_img_load(path: str):
+    images = list()
+    for i in range(2):
+        img1 = pg.image.load(path + f'couple{i}_player1.png')
+        img2 = pg.image.load(path + f'couple{i}_player2.png')
+        images.append((img1, img2))
+
+    return images
+
+
 def draw_choice_arrow(img, x, y, screen):
     screen.blit(img, (x, y))
     rect = pg.rect.Rect(x, y, img.get_width(), img.get_height())
@@ -141,7 +151,7 @@ def choice_group1_update(_events, input_crns, choice_crns):
     draw_choice_arrow(
         choice_left_arrow_img,
         choice_crns.x + 5,
-        choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
+        choice_crns.y + choice_crns.h // 2 - choice_left_arrow_img.get_height() // 2,
         game1.screen1.screen
     )
     draw_choice_arrow(
@@ -150,11 +160,30 @@ def choice_group1_update(_events, input_crns, choice_crns):
         choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
         game1.screen1.screen
     )
+    if True:
+        selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35
+    else:
+        selected_player_x = choice_crns.x + choice_left_arrow_img.get_width() + 35
+
     draw_choice_arrow(
         choice_pointer_arrow_img,
-        choice_crns.x + choice_crns.w // 2 - choice_pointer_arrow_img.get_width() // 2 - 30,
+        selected_player_x,
         choice_crns.y + choice_crns.h - choice_pointer_arrow_img.get_height() - 5,
         game1.screen1.screen
+    )
+    game1.screen1.screen.blit(
+        couples_images[0][0],
+        (
+            choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35,
+            choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
+        )
+    )
+    game1.screen1.screen.blit(
+        couples_images[0][1],
+        (
+            choice_crns.x + choice_left_arrow_img.get_width() + 35,
+            choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
+        )
     )
 
     return rect_input
@@ -172,7 +201,7 @@ def choice_group2_update(_events, input_crns, choice_crns):
     draw_choice_arrow(
         choice_left_arrow_img,
         choice_crns.x + 5,
-        choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
+        choice_crns.y + choice_crns.h // 2 - choice_left_arrow_img.get_height() // 2,
         game1.screen1.screen
     )
     draw_choice_arrow(
@@ -181,11 +210,31 @@ def choice_group2_update(_events, input_crns, choice_crns):
         choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
         game1.screen1.screen
     )
+
+    if False:
+        selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35
+    else:
+        selected_player_x = choice_crns.x + choice_left_arrow_img.get_width() + 35
+
     draw_choice_arrow(
         choice_pointer_arrow_img,
-        choice_crns.x + choice_crns.w // 2 - choice_pointer_arrow_img.get_width() // 2 - 30,
+        selected_player_x,
         choice_crns.y + choice_crns.h - choice_pointer_arrow_img.get_height() - 5,
         game1.screen1.screen
+    )
+    game1.screen1.screen.blit(
+        couples_images[1][0],
+        (
+            choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35,
+            choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
+        )
+    )
+    game1.screen1.screen.blit(
+        couples_images[1][1],
+        (
+            choice_crns.x + choice_left_arrow_img.get_width() + 35,
+            choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
+        )
     )
 
     return rect_input
@@ -221,6 +270,10 @@ def game1_screen1_loop():
                 game1.init_screen2((player1.name, player2.name))
                 player1.gravity = game1.gravity
                 player2.gravity = game1.gravity
+                player1.img = couples_images[0][1]
+                player2.img = pg.transform.flip(couples_images[1][0], True, False)
+                player1.img_rotated = player1.img
+                player2.img_rotated = player2.img
                 return True
             elif button_quit.collide_point(mouse_position):
                 return False
@@ -233,6 +286,8 @@ def game1_screen1_loop():
 
     return True
 
+
+couples_images = couples_img_load('Media/Images/Players/')
 
 game1_screen = 1
 game1.players_names = player1.name, player2.name
