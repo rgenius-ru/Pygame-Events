@@ -1,5 +1,5 @@
 from numpy import abs
-from pygame.transform import rotate
+from pygame.transform import rotate, rotozoom
 
 
 class Player:
@@ -49,7 +49,8 @@ class Player:
         self.screen.blit(img, (self._x, self._y))
 
     def rotate(self, angle_deg):
-        self.img_rotated = rotate(self.img, angle_deg)
+        # self.img_rotated = rotate(self.img, angle_deg)
+        self.img_rotated = rotozoom(self.img, angle_deg, scale=1)  # filtered scale and rotation
 
     def update(self):
         self._width = self.img_rotated.get_width()
