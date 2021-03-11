@@ -159,8 +159,10 @@ def game1_screen1_loop():
             if button_run.collide_point(mouse_position):
                 global game1_screen
                 game1_screen = 2
-                players_names = text_input1.get_text(), text_input2.get_text()
-                game1.init_screen2(players_names)
+                player1.name, player2.name = text_input1.get_text(), text_input2.get_text()
+                game1.init_screen2((player1.name, player2.name))
+                player1.gravity = game1.gravity
+                player2.gravity = game1.gravity
                 return True
             elif button_quit.collide_point(mouse_position):
                 return False
