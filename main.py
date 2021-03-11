@@ -16,8 +16,9 @@ pg.mixer.pre_init(frequency=44100)
 pg.init()
 pg.mixer.init(frequency=44100)
 
-screen1 = Screen(resolution_id=3)
-screen2 = Screen(resolution_id=3)
+resolution_id = 0
+screen1 = Screen(resolution_id)
+screen2 = Screen(resolution_id)
 
 game1 = Game(screen1, screen2)
 game1.init_screen1()
@@ -105,9 +106,19 @@ def game1_screen2_loop():
     return True
 
 
-def text1_update(_events):
+def draw_choice_rect(x, y, w, h, screen):
+    return pg.draw.rect(screen, (140, 140, 140), pg.Rect(x, y, w, h), width=1, border_radius=5)
+
+
+def draw_text_input_rect(x, y, w, h, screen):
+    pg.draw.rect(screen, (140, 140, 140), pg.Rect(x, y, w, h), width=3, border_radius=5)
+    return pg.draw.rect(screen, (240, 240, 240), pg.Rect(x+1, y+1, w-2, h-2), width=0, border_radius=5)
+
+
+def choice_group1_update(_events):
     x, y, w, h = 20, 20, 300, 40
-    rect = draw_rect(x, y, w, h, game1.screen1.screen)
+    draw_choice_rect(x - 5, y - 5 + h // 2, w + 70, h + 200, game1.screen1.screen)
+    rect = draw_text_input_rect(x, y, w, h, game1.screen1.screen)
 
     text_input1.update(_events)
     text1_position = (x + 5, y + 5)
@@ -116,21 +127,17 @@ def text1_update(_events):
     return rect
 
 
-def text2_update(_events):
+def choice_group2_update(_events):
     w, h = 300, 40
     x, y = game1.screen1.width - w - 20, 20
-    rect = draw_rect(x, y, w, h, game1.screen1.screen)
+    draw_choice_rect(x - 70, y - 5 + h // 2, w + 70 + 5, h + 200, game1.screen1.screen)
+    rect = draw_text_input_rect(x, y, w, h, game1.screen1.screen)
 
     text_input2.update(_events)
     text2_position = (x + 5, y + 5)
     game1.screen1.screen.blit(text_input2.get_surface(), text2_position)
 
     return rect
-
-
-def draw_rect(x, y, w, h, screen):
-    pg.draw.rect(screen, (140, 140, 140), pg.Rect(x, y, w, h), width=3, border_radius=5)
-    return pg.draw.rect(screen, (240, 240, 240), pg.Rect(x+1, y+1, w-2, h-2), width=0, border_radius=5)
 
 
 left = game1.screen1.width // 2
@@ -148,8 +155,8 @@ def game1_screen1_loop():
 
     events = pg.event.get()
 
-    text_player1 = text1_update(events)
-    text_player2 = text2_update(events)
+    text_rect_player1 = choice_group1_update(events)
+    text_rect_player2 = choice_group2_update(events)
 
     for event in events:
         if event.type == pg.QUIT:
@@ -166,10 +173,10 @@ def game1_screen1_loop():
                 return True
             elif button_quit.collide_point(mouse_position):
                 return False
-            elif text_player1.collidepoint(mouse_position):
+            elif text_rect_player1.collidepoint(mouse_position):
                 text_input1.focused = True
                 text_input2.focused = False
-            elif text_player2.collidepoint(mouse_position):
+            elif text_rect_player2.collidepoint(mouse_position):
                 text_input2.focused = True
                 text_input1.focused = False
 
