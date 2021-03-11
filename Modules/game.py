@@ -42,7 +42,7 @@ class Game:
 
         # Caption and Icon
         display.set_caption("Игра Трясунчик")
-        icon = image.load('../Media/Images/ufo.png')
+        icon = image.load('./Media/Images/ufo.png')
         display.set_icon(icon)
 
     def init_screen2(self, players_names):
@@ -77,15 +77,15 @@ class Game:
         self.gravity = 1 * self.screen2.height / 600
 
         # Background
-        self.background2 = image.load('../Media/Images/background2.png')
+        self.background2 = image.load('./Media/Images/background2.png')
 
         # Sound
-        mixer.music.load("../Media/Sounds/background.wav")
+        mixer.music.load("./Media/Sounds/background.wav")
         mixer.music.play(-1)
 
     def init_screen1(self):
         # Background
-        self.background1 = image.load('../Media/Images/background2.jpg')
+        self.background1 = image.load('./Media/Images/background2.jpg')
 
     def show_score1(self):
         name = self.font.render(self.players_names[0], True, (200, 200, 0))
