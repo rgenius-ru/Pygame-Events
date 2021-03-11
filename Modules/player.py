@@ -50,7 +50,7 @@ class Player:
 
     def rotate(self, angle_deg):
         # self.img_rotated = rotate(self.img, angle_deg)
-        self.img_rotated = rotozoom(self.img, angle_deg, scale=1)  # filtered scale and rotation
+        self.img_rotated = rotozoom(self.img, angle_deg, 1)  # filtered scale and rotation
 
     def update(self):
         self._width = self.img_rotated.get_width()
