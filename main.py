@@ -123,7 +123,7 @@ def couples_img_load(path: str):
     return images
 
 
-def draw_choice_arrow(img, x, y, screen):
+def draw_select_arrow(img, x, y, screen):
     screen.blit(img, (x, y))
     rect = pg.rect.Rect(x, y, img.get_width(), img.get_height())
     return rect
@@ -146,45 +146,51 @@ def choice_group1_update(_events, input_crns, choice_crns):
     text1_position = (input_crns.x + 5, input_crns.y + 5)
     game1.screen1.screen.blit(text_input1.get_surface(), text1_position)
 
-    draw_choice_arrow(
+    rect_left_arrow = draw_select_arrow(
         choice_left_arrow_img,
         choice_crns.x + 5,
         choice_crns.y + choice_crns.h // 2 - choice_left_arrow_img.get_height() // 2,
         game1.screen1.screen
     )
-    draw_choice_arrow(
+    rect_right_arrow = draw_select_arrow(
         choice_right_arrow_img,
         choice_crns.x + choice_crns.w - choice_right_arrow_img.get_width() - 5,
         choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
         game1.screen1.screen
     )
-    if True:
-        selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35
-    else:
-        selected_player_x = choice_crns.x + choice_left_arrow_img.get_width() + 35
 
-    draw_choice_arrow(
-        choice_pointer_arrow_img,
-        selected_player_x,
-        choice_crns.y + choice_crns.h - choice_pointer_arrow_img.get_height() - 5,
-        game1.screen1.screen
-    )
-    game1.screen1.screen.blit(
-        couples_images[0][0],
+    if select_player_left:
+        if select_player_left == 1:
+            selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][
+                1].get_width() - 35
+        else:
+            selected_player_x = choice_crns.x + choice_left_arrow_img.get_width() + 35
+
+        rect_select_arrow = draw_select_arrow(
+            choice_pointer_arrow_img,
+            selected_player_x,
+            choice_crns.y + choice_crns.h - choice_pointer_arrow_img.get_height() - 5,
+            game1.screen1.screen
+        )
+    else:
+        rect_select_arrow = None
+
+    rect_couple_player1 = game1.screen1.screen.blit(
+        couples_images[couples_id_left][0],
         (
             choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35,
             choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
         )
     )
-    game1.screen1.screen.blit(
-        couples_images[0][1],
+    rect_couple_player2 = game1.screen1.screen.blit(
+        couples_images[couples_id_left][1],
         (
             choice_crns.x + choice_left_arrow_img.get_width() + 35,
             choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
         )
     )
 
-    return rect_input
+    return rect_input, rect_left_arrow, rect_right_arrow, rect_select_arrow, rect_couple_player1, rect_couple_player2
 
 
 def choice_group2_update(_events, input_crns, choice_crns):
@@ -196,53 +202,50 @@ def choice_group2_update(_events, input_crns, choice_crns):
     text2_position = (input_crns.x + 5, input_crns.y + 5)
     game1.screen1.screen.blit(text_input2.get_surface(), text2_position)
 
-    draw_choice_arrow(
+    rect_left_arrow = draw_select_arrow(
         choice_left_arrow_img,
         choice_crns.x + 5,
         choice_crns.y + choice_crns.h // 2 - choice_left_arrow_img.get_height() // 2,
         game1.screen1.screen
     )
-    draw_choice_arrow(
+    rect_right_arrow = draw_select_arrow(
         choice_right_arrow_img,
         choice_crns.x + choice_crns.w - choice_right_arrow_img.get_width() - 5,
         choice_crns.y + choice_crns.h // 2 - choice_right_arrow_img.get_height() // 2,
         game1.screen1.screen
     )
 
-    if False:
-        selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35
-    else:
-        selected_player_x = choice_crns.x + choice_left_arrow_img.get_width() + 35
+    if select_player_right:
+        if select_player_right == 1:
+            selected_player_x = choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35
+        else:
+            selected_player_x = choice_crns.x + choice_left_arrow_img.get_width() + 35
 
-    draw_choice_arrow(
-        choice_pointer_arrow_img,
-        selected_player_x,
-        choice_crns.y + choice_crns.h - choice_pointer_arrow_img.get_height() - 5,
-        game1.screen1.screen
-    )
-    game1.screen1.screen.blit(
-        couples_images[1][0],
+        rect_select_arrow = draw_select_arrow(
+            choice_pointer_arrow_img,
+            selected_player_x,
+            choice_crns.y + choice_crns.h - choice_pointer_arrow_img.get_height() - 5,
+            game1.screen1.screen
+        )
+    else:
+        rect_select_arrow = None
+
+    rect_couple_player1 = game1.screen1.screen.blit(
+        couples_images[couples_id_right][0],
         (
             choice_crns.x + choice_crns.w - choice_left_arrow_img.get_width() - couples_images[0][1].get_width() - 35,
             choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
         )
     )
-    game1.screen1.screen.blit(
-        couples_images[1][1],
+    rect_couple_player2 = game1.screen1.screen.blit(
+        couples_images[couples_id_right][1],
         (
             choice_crns.x + choice_left_arrow_img.get_width() + 35,
             choice_crns.y + choice_crns.h // 2 - couples_images[0][1].get_height() // 2
         )
     )
 
-    return rect_input
-
-
-left = game1.screen1.width // 2
-top = game1.screen1.height
-
-button_run = Button(game1.screen1.screen, 'Media/Images/button_run.png', (left, top - 160), 'Играть')
-button_quit = Button(game1.screen1.screen, 'Media/Images/button_quit.png', (left, top - 80), 'Выход')
+    return rect_input, rect_left_arrow, rect_right_arrow, rect_select_arrow, rect_couple_player1, rect_couple_player2
 
 
 def game1_screen1_loop():
@@ -253,14 +256,15 @@ def game1_screen1_loop():
 
     events = pg.event.get()
 
-    text_rect_player1 = choice_group1_update(events, input1_corners, choice1_corners)
-    text_rect_player2 = choice_group2_update(events, input2_corners, choice2_corners)
+    text_rect_player1, player1_r_left_arrow, player1_r_right_arrow, player1_r_select_arrow, player1_r_couple_player1, player1_r_couple_player2 = choice_group1_update(events, input1_corners, choice1_corners)
+    text_rect_player2, player2_r_left_arrow, player2_r_right_arrow, player2_r_select_arrow, player2_r_couple_player1, player2_r_couple_player2 = choice_group2_update(events, input2_corners, choice2_corners)
 
     for event in events:
         if event.type == pg.QUIT:
             return False
         elif event.type == pg.MOUSEBUTTONDOWN:
             mouse_position = pg.mouse.get_pos()
+            global couples_id_left, couples_id_right, select_player_left, select_player_right
             if button_run.collide_point(mouse_position):
                 global game1_screen
                 game1_screen = 2
@@ -281,9 +285,51 @@ def game1_screen1_loop():
             elif text_rect_player2.collidepoint(mouse_position):
                 text_input2.focused = True
                 text_input1.focused = False
+            elif player1_r_right_arrow.collidepoint(mouse_position):
+                if couples_id_left < len(couples_images) - 1:
+                    couples_id_left += 1
+                text_input2.focused = False
+                text_input1.focused = False
+            elif player1_r_left_arrow.collidepoint(mouse_position):
+                if couples_id_left > 0:
+                    couples_id_left -= 1
+                text_input2.focused = False
+                text_input1.focused = False
+            elif player2_r_right_arrow.collidepoint(mouse_position):
+                if couples_id_right < len(couples_images) - 1:
+                    couples_id_right += 1
+                text_input2.focused = False
+                text_input1.focused = False
+            elif player2_r_left_arrow.collidepoint(mouse_position):
+                if couples_id_right > 0:
+                    couples_id_right -= 1
+                text_input2.focused = False
+                text_input1.focused = False
+            elif player1_r_couple_player1.collidepoint(mouse_position):
+                select_player_left = 1
+                text_input2.focused = False
+                text_input1.focused = False
+            elif player1_r_couple_player2.collidepoint(mouse_position):
+                select_player_left = 2
+                text_input2.focused = False
+                text_input1.focused = False
+            elif player2_r_couple_player1.collidepoint(mouse_position):
+                select_player_right = 1
+                text_input2.focused = False
+                text_input1.focused = False
+            elif player2_r_couple_player2.collidepoint(mouse_position):
+                select_player_right = 2
+                text_input2.focused = False
+                text_input1.focused = False
 
     return True
 
+
+left = game1.screen1.width // 2
+top = game1.screen1.height
+
+button_run = Button(game1.screen1.screen, 'Media/Images/button_run.png', (left, top - 160), 'Играть')
+button_quit = Button(game1.screen1.screen, 'Media/Images/button_quit.png', (left, top - 80), 'Выход')
 
 couples_images = couples_img_load('Media/Images/Players/')
 
@@ -317,6 +363,12 @@ choice2_corners = Corners(
     w=input2_corners.w + 70 + 5,
     h=input2_corners.h + 200
 )
+
+select_player_left = None
+select_player_right = None
+
+couples_id_left = 0
+couples_id_right = 0
 
 # Game Loop
 running = True
