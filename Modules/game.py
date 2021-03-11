@@ -45,7 +45,7 @@ class Game:
         icon = image.load('./Media/Images/ufo.png')
         display.set_icon(icon)
 
-    def init_screen2(self, players_names):
+    def init_screen2(self, players_names, score1_value=0, score2_value=0):
         self.is_round_over = False
         self.is_game_over = False
 
@@ -55,8 +55,8 @@ class Game:
 
         # Score
         self.font = font.Font('freesansbold.ttf', 32)
-        self.score1_value = 0
-        self.score2_value = 0
+        self.score1_value = score1_value
+        self.score2_value = score2_value
 
         self.score1_x = 10
         self.score1_y = 10
@@ -108,7 +108,7 @@ class Game:
     def round_over_text(self):
         over_text = self.round_over_font.render(f'Победил {self.win_round_player.name}', True, (255, 255, 255))
         x = self.screen2.width // 2 - over_text.get_width() // 2
-        y = self.screen2.height - over_text.get_height() - 100
+        y = self.screen2.height // 2 - over_text.get_height() // 2
         self.screen2.screen.blit(over_text, (x, y))
 
     def round_over(self):

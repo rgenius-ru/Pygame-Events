@@ -74,18 +74,27 @@ def draw_track(track):
 
 
 def game1_screen2_loop():
-    for event in pg.event.get():
+    events = pg.event.get()
+    for event in events:
         if event.type == pg.QUIT:
             return False
 
-        if not game1.is_round_over:
+        elif game1.is_round_over:
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse_position = pg.mouse.get_pos()
+                if button_continue.collide_point(mouse_position):
+                    game1.init_screen2((player1.name, player2.name), game1.score1_value, game1.score2_value)
+                    player1.back_to_start(game1.screen2.height)
+                    player2.back_to_start(game1.screen2.height)
+
+        else:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_w:
                     player1.launch()
                 if event.key == pg.K_UP:
                     player2.launch()
 
-            if event.type == pg.KEYUP:
+            elif event.type == pg.KEYUP:
                 if event.key == pg.K_w:
                     player1.stop()
                 if event.key == pg.K_UP:
@@ -107,6 +116,7 @@ def game1_screen2_loop():
                 game1.win_round_player = player2
 
             game1.round_over()
+            # button_continue.is_active = True
     # else:
     #     game1.round_over()
 
@@ -348,6 +358,15 @@ button_quit = Button(
     'Media/Images/button_quit.png'
 )
 
+left = game1.screen2.width // 2
+top = game1.screen2.height
+button_continue = Button(
+    game1.screen2.screen,
+    (left, top - 80),
+    'Продолжить',
+    'Media/Images/button_continue.png',
+)
+
 couples_images = couples_img_load('Media/Images/Players/')
 
 game1_screen = 1
@@ -398,6 +417,8 @@ while running:
         target1.update()  # Second update target
         player1.update()
         player2.update()
+        if game1.is_round_over:
+            button_continue.update()
 
         # ***************** Debug *********************
         # pg.draw.circle(game1.screen.screen, (0, 200, 0), (target1.center_x, target1.center_y), radius=60, width=2)

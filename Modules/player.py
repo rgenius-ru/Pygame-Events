@@ -52,6 +52,10 @@ class Player:
         # self.img_rotated = rotate(self.img, angle_deg)
         self.img_rotated = rotozoom(self.img, angle_deg, 1)  # filtered scale and rotation
 
+    def back_to_start(self, y):
+        self._y = y - self._height
+        self._x = self.track.get_x(self._y + self._height // 2) - self._width // 2
+
     def update(self):
         self._width = self.img_rotated.get_width()
         self._height = self.img_rotated.get_height()
