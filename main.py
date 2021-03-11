@@ -271,8 +271,8 @@ def game1_screen1_loop():
                 game1.init_screen2((player1.name, player2.name))
                 player1.gravity = game1.gravity
                 player2.gravity = game1.gravity
-                player1.img = couples_images[0][1]
-                player2.img = pg.transform.flip(couples_images[1][0], True, False)
+                player1.img = couples_images[couples_id_left][select_player_left - 1]
+                player2.img = pg.transform.flip(couples_images[couples_id_right][select_player_right - 1], True, False)
                 player1.img_rotated = player1.img
                 player2.img_rotated = player2.img
                 return True
