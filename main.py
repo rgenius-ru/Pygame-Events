@@ -106,8 +106,6 @@ def game1_screen2_loop():
                 game1.score2_value += 1
                 game1.win_round_player = player2
 
-            explosion_sound = pg.mixer.Sound("Media/Sounds/explosion.wav")
-            explosion_sound.play()
             game1.round_over()
     # else:
     #     game1.round_over()

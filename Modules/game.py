@@ -112,6 +112,8 @@ class Game:
         self.screen2.screen.blit(over_text, (x, y))
 
     def round_over(self):
+        explosion_sound = mixer.Sound("./Media/Sounds/explosion.wav")
+        explosion_sound.play()
         self.is_round_over = True
         self.round_over_text()
 
