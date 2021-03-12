@@ -81,7 +81,7 @@ class Game:
 
         # Sound
         mixer.music.load("./Media/Sounds/background.wav")
-        mixer.music.play(-1)
+        mixer.music.play(-1, fade_ms=5000)
 
     def init_screen1(self):
         # Background
