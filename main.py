@@ -73,7 +73,16 @@ def draw_track(track):
         pg.draw.circle(game1.screen2.screen, (0, 0, 220), (track.get_x(y), y), radius=1, width=1)
 
 
+def start_round():
+    game1.is_round_over = False
+    player1.stop()
+    player2.stop()
+    player1.back_to_start(game1.screen2.height)
+    player2.back_to_start(game1.screen2.height)
+
+
 def game1_screen2_loop():
+    global game1_screen
     if not game1.is_round_over:
         # Collision
         collision_player1 = is_collision(target1.center_x, target1.center_y, player1.x, player1.y)
@@ -90,25 +99,32 @@ def game1_screen2_loop():
                 game1.win_round_player = player2
 
             game1.round_over()
-            # button_continue.is_active = True
-    # else:
-    #     game1.round_over()
+
+    if game1.score1_value >= 2 or game1.score2_value >= 2:
+        game1.is_game_over = True
 
     events = pg.event.get()
     for event in events:
         if event.type == pg.QUIT:
             return False
 
+        elif game1.is_game_over:
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse_position = pg.mouse.get_pos()
+                if button_continue.collide_point(mouse_position):
+                    game1.game_over()
+                    game1_screen = 1
+                    game1.init_screen1()
+                    start_round()
+                    return True
+
         elif game1.is_round_over:
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_position = pg.mouse.get_pos()
                 if button_continue.collide_point(mouse_position):
                     game1.init_screen2((player1.name, player2.name), game1.score1_value, game1.score2_value)
-                    game1.is_round_over = False
-                    player1.stop()
-                    player2.stop()
-                    player1.back_to_start(game1.screen2.height)
-                    player2.back_to_start(game1.screen2.height)
+                    start_round()
+                    return True
 
         else:
             if event.type == pg.KEYDOWN:
