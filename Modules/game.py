@@ -123,7 +123,8 @@ class Game:
         :return:
         """
         self.is_game_over = True
-        self.game_over_text()
+        # self.game_over_text()
+        mixer.music.fadeout(4)
 
     def update(self):
         self.screen2.screen.blit(self.background2, (0, 0))
