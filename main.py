@@ -10,6 +10,7 @@ from Modules.screen import Screen
 from Modules.game import Game
 from Modules.target import Target
 from Modules.button import Button
+from Modules.draw_connection import ConnectionGroup
 
 
 class Corners:
@@ -282,6 +283,9 @@ def game1_screen1_loop():
     button_run.update()
     button_quit.update()
 
+    right_connection_group.update()
+    left_connection_group.update()
+
     global select_player_left, select_player_right
     if select_player_left and select_player_right:
         button_run.is_active = True
@@ -424,6 +428,26 @@ select_player_right = None
 
 couples_id_left = 0
 couples_id_right = 0
+
+img1 = pg.image.load('./Media/Images/connection_active.png')
+img2 = pg.image.load('./Media/Images/connection_inactive.png')
+right_connection_group = ConnectionGroup(
+    game1.screen1.screen,
+    img_active=img1,
+    img_inactive=img2,
+    x=game1.screen1.width - 100 - img1.get_width(),
+    y=button_quit.rect.y,
+    align='Right'
+)
+left_connection_group = ConnectionGroup(
+    game1.screen1.screen,
+    img_active=img1,
+    img_inactive=img2,
+    x=100,
+    y=button_quit.rect.y,
+    is_active=False
+)
+
 
 # Game Loop
 running = True
