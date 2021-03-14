@@ -3,25 +3,32 @@ import glob
 import sys
 from threading import Thread
 import threading
+import time
 
 
-class BaseStation(Thread):
+class SearchingBase(Thread):
     def __init__(self, port=None, ports=None, baud=115200):
         super().__init__()
-        self._baud = baud
+        self.baud = baud
         self._ports = ports
-        self._port = port
-        self._received_data = None
-        self._is_connected = False
+        self.port = port
+        self.received_data = None
+        self.is_connected = False
+        self._running = True
 
     def run(self):
         s, port = self._searching_base_station()
+        while self._running:
+            self.receive()
+
+    def stop(self):
+        self._running = False
 
     def receive(self):
-        if self._is_connected:
+        if self.is_connected:
             try:
-                _serial = serial.Serial(self._port, self._baud, )
-                self._received_data = self._wait_receive(_serial, self._port)
+                _serial = serial.Serial(self.port, self.baud, )
+                self.received_data = self._wait_receive(_serial, self.port)
             except serial.SerialException as e:
                 if e.errno == 13:
                     print('e')
@@ -31,17 +38,17 @@ class BaseStation(Thread):
                 print('OSError')
                 return None
 
-            return self._received_data
+            return self.received_data
 
         return None
 
     def _wait_receive(self, _serial, _port, _timeout=1):
-        _serial = serial.Serial(_port, self._baud, timeout=_timeout)
+        _serial = serial.Serial(_port, self.baud, timeout=_timeout)
         _string = None
 
         if _serial.isOpen():
-            while not _serial.inWaiting():
-                pass
+            # while not _serial.inWaiting():
+            #     pass
 
             data_read = _serial.readline()
             try:
@@ -83,7 +90,7 @@ class BaseStation(Thread):
                 print('Scan port: ', _port)
 
                 try:
-                    _s = serial.Serial(_port, self._baud, timeout=4)
+                    _s = serial.Serial(_port, self.baud, timeout=4)
 
                     if _s.isOpen():
                         data = bytes('Game-Event\r', 'utf8')
@@ -94,44 +101,55 @@ class BaseStation(Thread):
 
                         # print(_string)
                         if _string[:-5] == 'Event-Game-base':
-                            self._port = _port
-                            self._is_connected = True
+                            self.port = _port
+                            self.is_connected = True
                             result = _s, _port
                             print('Found: ', _string)
                             return result
 
                     _s.close()
                 except UnicodeEncodeError as err:
-                    self._port = None
-                    self._is_connected = False
+                    self.port = None
+                    self.is_connected = False
                     print('Base station not found')
                     print('ERROR:', err)
                     return None, None
                 except serial.SerialException as e:
                     if e.errno == 13:
                         raise e
-                    self._port = None
-                    self._is_connected = False
+                    self.port = None
+                    self.is_connected = False
                     print('Base station not found')
                     return None, None
                 except OSError:
-                    self._port = None
-                    self._is_connected = False
+                    self.port = None
+                    self.is_connected = False
                     print('Base station not found')
                     return None, None
 
-            self._port = None
-            self._is_connected = False
+            self.port = None
+            self.is_connected = False
             print('Base station not found')
             return None, None
 
+        time.sleep(1)
+
+
+class BaseStation(SearchingBase):
+    def __init__(self):
+        super().__init__()
+
+
+async def print_async():
+    print('hi')
 
 if __name__ == '__main__':
     # event = threading.Event()
-    base_serial_socket = BaseStation()
-    base_serial_socket.start()
+    base_station = BaseStation()
+    base_station.start()
 
-    while True:
-        string_data = base_serial_socket.receive()
-        if string_data:
-            print(string_data)
+    while base_station.is_alive():
+        time.sleep(1)
+
+    print(base_station.baud, base_station.port)
+

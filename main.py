@@ -5,6 +5,7 @@ import math
 from Modules.pygame_textinput import TextInput
 # import random
 # import numpy as np
+import time
 
 from Modules.paraboloidTrack import Track
 from Modules.player import Player
@@ -16,45 +17,46 @@ from Modules.draw_connection import ConnectionGroup
 from Modules.base_station import BaseStation
 
 
-class GameLoop(Thread):
-    def run(self):
-        # Game Loop
-        running = True
-        while running:
-            if game1_screen == 1:
-                running = game1_screen1_loop()
-            elif game1_screen == 2:
-                running = game1_screen2_loop()
-                game1.update()  # Game update first
-                target1.update()  # Second update target
-                player1.update()
-                player2.update()
-                if game1.is_round_over:
-                    button_continue.update()
+def game_loop():
+    # Game Loop
+    running = True
+    while running:
+        if game1_screen == 1:
+            running = game1_screen1_loop()
+        elif game1_screen == 2:
+            running = game1_screen2_loop()
+            game1.update()  # Game update first
+            target1.update()  # Second update target
+            player1.update()
+            player2.update()
+            if game1.is_round_over:
+                button_continue.update()
 
-                # ***************** Debug *********************
-                # pg.draw.circle(game1.screen.screen, (0, 200, 0), (target1.center_x, target1.center_y), radius=60, width=2)
-                # pg.draw.circle(game1.screen.screen, (220, 0, 0), (player1.x, player1.y), radius=20, width=2)
-                # pg.draw.circle(game1.screen.screen, (220, 0, 0), (player2.x, player2.y), radius=20, width=2)
-                #
-                # w = player1.img_rotated.get_width()
-                # h = player1.img_rotated.get_height()
-                # x = player1.x - w // 2
-                # y = player1.y - h // 2
-                # pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
-                #
-                # w = player2.img_rotated.get_width()
-                # h = player2.img_rotated.get_height()
-                # x = player2.x - w // 2
-                # y = player2.y - h // 2
-                # pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
-                #
-                # draw_track(track1)
-                # draw_track(track2)
-                # *************** END * Debug *****************
+            # ***************** Debug *********************
+            # pg.draw.circle(game1.screen.screen, (0, 200, 0), (target1.center_x, target1.center_y), radius=60, width=2)
+            # pg.draw.circle(game1.screen.screen, (220, 0, 0), (player1.x, player1.y), radius=20, width=2)
+            # pg.draw.circle(game1.screen.screen, (220, 0, 0), (player2.x, player2.y), radius=20, width=2)
+            #
+            # w = player1.img_rotated.get_width()
+            # h = player1.img_rotated.get_height()
+            # x = player1.x - w // 2
+            # y = player1.y - h // 2
+            # pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
+            #
+            # w = player2.img_rotated.get_width()
+            # h = player2.img_rotated.get_height()
+            # x = player2.x - w // 2
+            # y = player2.y - h // 2
+            # pg.draw.rect(game1.screen.screen, (0, 0, 220), pg.Rect(x, y, w, h), width=1)
+            #
+            # draw_track(track1)
+            # draw_track(track2)
+            # *************** END * Debug *****************
 
-            pg.display.update()
-            fpsClock.tick(FPS)
+        pg.display.update()
+        fpsClock.tick(FPS)
+
+    base_station.stop()
 
 
 class Corners:
@@ -172,14 +174,18 @@ def game1_screen2_loop():
                     return True
 
         else:
-            # data = base_station.receive()
-            # if len(data) > 1:
-            #     print(data)
-            #     speed = 5 * int(data[1:]) / 255
-            #     if data[0] == 'l':
-            #         player1.speed_up(speed)
-            #     elif data[0] == 'r':
-            #         player2.speed_up(speed)
+            data = base_station.received_data
+            # data = 'l150'
+
+            if len(data) > 1:
+                speed = int(5 * int(data[1:]) / 255)
+                if data[0] == 'l':
+                    player1.speed = speed
+                    player1.launch()
+                    print('speed up: ', data, speed)
+                elif data[0] == 'r':
+                    player2.speed = speed
+
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_w:
                     player1.launch()
@@ -415,10 +421,6 @@ def game1_screen1_loop():
     return True
 
 
-# event = threading.Event()
-base_station = BaseStation()
-base_station.start()
-
 left = game1.screen1.width // 2
 top = game1.screen1.height
 
@@ -504,6 +506,21 @@ left_connection_group = ConnectionGroup(
     is_active=False
 )
 
+# event = threading.Event()
+base_station = BaseStation()
+base_station.start()
 
-game = GameLoop()
-game.run()
+# task1 = Thread(target=base_station.receive, args=[])
+# task1.start()
+
+
+game_loop()
+
+# event = threading.Event()
+# base_station = BaseStation()
+# base_station.start()
+#
+# while base_station.is_alive():
+#     time.sleep(1)
+#
+# print(base_station.baud, base_station.port)
