@@ -21,6 +21,10 @@ class Player:
         self.gravity = gravity
         self.name = name
 
+    def speed_up(self, speed):
+        self.speed = speed
+        self.launch()
+
     def launch(self):
         self.y_change = -self.speed
 
