@@ -47,4 +47,5 @@ class ConnectionGroup(VolumeBar):
             img = self.img_active
         else:
             img = self.img_inactive
+            self.value = 0
         self.screen.blit(img, (self.x, self.y))

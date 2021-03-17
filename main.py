@@ -353,7 +353,7 @@ def game1_screen1_loop():
         elif len(data) > 1:
             speed = int(max_players_speed * int(data[1:]) / 255)
             value = int(speed * 100 / max_players_speed)
-            print('speed up: ', data, speed, value)
+            # print('speed up: ', data, speed)
             if data[0] == 'l':
                 left_connection_group.value = value
             elif data[0] == 'r':
