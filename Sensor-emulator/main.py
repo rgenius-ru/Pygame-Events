@@ -49,10 +49,10 @@ def send_l_or_r(side: str):
 
         if side == 'l':
             value_left += randint(-delta, delta)
-            value_left = constrain(value_left, 0, 255)
+            value_left = constrain(value_left, 100, 255)
         elif side == 'r':
             value_right += randint(-delta, delta)
-            value_right = constrain(value_right, 0, 255)
+            value_right = constrain(value_right, 100, 255)
         else:
             s.close()
             return False
@@ -66,6 +66,6 @@ def send_l_or_r(side: str):
 
 while True:
     send_l_or_r('l')
-    sleep(0.5)
+    sleep(0.2)
     send_l_or_r('r')
-    sleep(0.5)
+    sleep(0.2)
