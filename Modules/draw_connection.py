@@ -2,13 +2,14 @@ from pygame import rect, draw
 
 
 class VolumeBar:
-    def __init__(self, screen, x, y, w=30, h=140):
+    def __init__(self, screen, x, y, w=30, h=140, value=0):
         self.screen = screen
         self.w = w
         self.h = h
         # self.x = x
         self.y = y - self.h
         self.rect = rect.Rect(x, self.y, self.w, self.h)
+        self.value = value
 
     def update(self):
         draw.rect(self.screen, (240, 240, 240), self.rect, width=0, border_radius=2)

@@ -343,11 +343,26 @@ def game1_screen1_loop():
     button_run.update()
     button_quit.update()
 
+    if base_station.is_connected:
+        right_connection_group.is_active = base_station.is_right_connected
+        left_connection_group.is_active = base_station.is_left_connected
+
+        data = base_station.received_data
+        if data is None:
+            print('Data can not received')
+        elif len(data) > 1:
+            speed = int(5 * int(data[1:]) / 255)
+            # print('speed up: ', data, speed)
+            if data[0] == 'l':
+                left_connection_group.value = speed
+            elif data[0] == 'r':
+                right_connection_group.value = speed
+
     right_connection_group.update()
     left_connection_group.update()
 
     global select_player_left, select_player_right
-    if select_player_left and select_player_right:
+    if select_player_left and select_player_right and right_connection_group.is_active and left_connection_group.is_active:
         button_run.is_active = True
     else:
         button_run.is_active = False
