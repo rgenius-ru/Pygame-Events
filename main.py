@@ -351,12 +351,13 @@ def game1_screen1_loop():
         if data is None:
             print('Data can not received')
         elif len(data) > 1:
-            speed = int(5 * int(data[1:]) / 255)
-            # print('speed up: ', data, speed)
+            speed = int(max_players_speed * int(data[1:]) / 255)
+            value = int(speed * 100 / max_players_speed)
+            print('speed up: ', data, speed, value)
             if data[0] == 'l':
-                left_connection_group.value = speed
+                left_connection_group.value = value
             elif data[0] == 'r':
-                right_connection_group.value = speed
+                right_connection_group.value = value
 
     right_connection_group.update()
     left_connection_group.update()
@@ -469,6 +470,8 @@ couples_images = couples_img_load('Media/Images/Players/')
 
 game1_screen = 1
 game1.players_names = player1.name, player2.name
+
+max_players_speed = 5
 
 # Create TextInput-object
 text_input1 = TextInput(focused=True)

@@ -98,7 +98,7 @@ class SearchingBase(Thread):
                     self.left_timer.restart()
                     self.is_left_connected = True
 
-            print(self.is_left_connected, self.is_right_connected)
+            # print(self.is_left_connected, self.is_right_connected)
 
             return self.received_data
 
