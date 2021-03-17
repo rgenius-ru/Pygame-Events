@@ -14,7 +14,7 @@ class Timer:
     def __init__(self, timeout):
         self._start_time = None
         self._timeout = timeout
-        self._previous_time = 0
+        self._previous_time = time.perf_counter()
 
     def start(self):
         """Start a new timer"""
@@ -34,11 +34,17 @@ class Timer:
         if self._start_time is None:
             raise TimerError(f"Timer is not running. Use .start() to start it")
 
-        if time.perf_counter() > self._previous_time - self._timeout:
-            self._previous_time = time.perf_counter()
+        time_now = time.perf_counter()
+        time_difference = time_now - self._previous_time
+        if time_difference > self._timeout:
+            self._previous_time = time_now
+            # print(time_difference)
             return True
 
         return False
+
+    def restart(self):
+        self._previous_time = time.perf_counter()
 
 
 class SearchingBase(Thread):
@@ -86,11 +92,13 @@ class SearchingBase(Thread):
 
             if self.received_data != '':
                 if self.received_data[0] == 'r':
+                    self.right_timer.restart()
                     self.is_right_connected = True
                 elif self.received_data[0] == 'l':
+                    self.left_timer.restart()
                     self.is_left_connected = True
 
-            print(self.is_left_connected, self.is_right_connected)
+            # print(self.is_left_connected, self.is_right_connected)
 
             return self.received_data
 
