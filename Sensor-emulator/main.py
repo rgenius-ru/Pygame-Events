@@ -1,5 +1,4 @@
 import socket  # for socket
-import sys
 from time import sleep
 from random import randint
 
@@ -7,80 +6,66 @@ value_left = 127
 value_right = 127
 delta = 40
 
-while True:
+
+def constrain(number, _min, _max):
+    if number > _max:
+        result = _max
+    elif number < _min:
+        result = _min
+    else:
+        result = number
+
+    return result
+
+
+def send_data(_socket, _string):
+    _data = bytes(_string, 'utf8')  # bytes('Python, bytes', 'utf8')
+
+    try:
+        _socket.sendall(_data)
+    except socket.error as _err:
+        print(f'socket creation failed with error {_err}')
+
+    print(_string)
+
+
+def send_l_or_r(side: str):
+    global value_left, value_right
     s = None
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # socket.SOCK_DGRAM)
-        # print("Socket successfully created")
     except socket.error as err:
         print(f'socket creation failed with error {err}')
 
-    # default port for socket
     port = 80
-
-    # try:
-    #     host_ip = socket.gethostbyname('www.google.com')
-    # except socket.gaierror:
-    #     # this means could not resolve the host
-    #     print("there was an error resolving the host")
-    #     sys.exit()
-
     host_ip = '192.168.4.15'
 
-    # Next bind to the port
-    # we have not typed any ip in the ip field
-    # instead we have inputted an empty string
-    # this makes the server listen to requests
-    # coming from other computers on the network
-    # s.bind((host_ip, port))
-    # print(f"socket binded to {port}")
-    #
-    # # put the socket into listening mode
-    # s.listen(5)
-    # print("socket is listening")
-
-    # connecting to the server
     if s:
-        s.connect((host_ip, port))
-        # print("the socket has successfully connected to base")
-        # print(f'on port == {port} and ip == {host_ip}')
+        try:
+            s.connect((host_ip, port))
+        except socket.error as err:
+            print(f'socket creation failed with error {err}')
 
-        value_left += randint(-delta, delta)
+        if side == 'l':
+            value_left += randint(-delta, delta)
+            value_left = constrain(value_left, 0, 255)
+        elif side == 'r':
+            value_right += randint(-delta, delta)
+            value_right = constrain(value_right, 0, 255)
+        else:
+            s.close()
+            return False
 
-        if value_left > 255:
-            value_left = 255
-        elif value_left < 0:
-            value_left = 0
-
-        string = 'l' + str(value_left) + '\r'
-        data = bytes(string, 'utf8')  # bytes('Python, bytes', 'utf8')
-        # data = [randint(0, 255)]
-        # data = bytes(data)
-        s.sendall(data)
-        # s.sendto(data, (host_ip, port))
-        print(string)
-
-        value_right += randint(-delta, delta)
-
-        if value_right > 255:
-            value_right = 255
-        elif value_right < 0:
-            value_right = 0
-
-        string = 'r' + str(value_right) + '\r'
-        data = bytes(string, 'utf8')  # bytes('Python, bytes', 'utf8')
-        # data = [randint(0, 255)]
-        # data = bytes(data)
-        s.sendall(data)
-        # s.sendto(data, (host_ip, port))
-        print(string)
-
-        # receive data from the server
-        # answer = s.recv(1024)
-        # answer = hex(answer)
-        # print(answer)
+        string = side + str(value_left) + '\r'
+        send_data(s, string)
 
         s.close()
+        return True
 
-        sleep(0.5)
+
+while True:
+    send_l_or_r('l')
+    sleep(0.5)
+    send_l_or_r('r')
+    sleep(0.5)
