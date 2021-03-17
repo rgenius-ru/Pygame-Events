@@ -176,15 +176,17 @@ def game1_screen2_loop():
         else:
             data = base_station.received_data
             # data = 'l150'
-
-            if len(data) > 1:
+            if data is None:
+                print('Data can not received')
+            elif len(data) > 1:
                 speed = int(5 * int(data[1:]) / 255)
+                # print('speed up: ', data, speed)
                 if data[0] == 'l':
                     player1.speed = speed
                     player1.launch()
-                    print('speed up: ', data, speed)
                 elif data[0] == 'r':
                     player2.speed = speed
+                    player2.launch()
 
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_w:
