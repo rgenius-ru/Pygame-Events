@@ -6,6 +6,41 @@ import threading
 import time
 
 
+class TimerError(Exception):
+    """A custom exception used to report errors in use of Timer class"""
+
+
+class Timer:
+    def __init__(self, timeout):
+        self._start_time = None
+        self._timeout = timeout
+        self._previous_time = 0
+
+    def start(self):
+        """Start a new timer"""
+        if self._start_time is not None:
+            raise TimerError(f"Timer is running. Use .stop() to stop it")
+        self._start_time = time.perf_counter()
+
+    def stop(self):
+        """Stop the timer, and report the elapsed time"""
+        if self._start_time is None:
+            raise TimerError(f"Timer is not running. Use .start() to start it")
+        elapsed_time = time.perf_counter() - self._start_time
+        self._start_time = None
+        print(f"Elapsed time: {elapsed_time:0.4f} seconds")
+
+    def time_is_over(self):
+        if self._start_time is None:
+            raise TimerError(f"Timer is not running. Use .start() to start it")
+
+        if time.perf_counter() > self._previous_time - self._timeout:
+            self._previous_time = time.perf_counter()
+            return True
+
+        return False
+
+
 class SearchingBase(Thread):
     def __init__(self, port=None, ports=None, baud=115200):
         super().__init__()
@@ -14,10 +49,18 @@ class SearchingBase(Thread):
         self.port = port
         self.received_data = None
         self.is_connected = False
+        self.is_left_connected = False
+        self.is_right_connected = False
         self._running = True
+        self.left_timer = Timer(1)
+        self.right_timer = Timer(1)
 
     def run(self):
         s, port = self._searching_base_station()
+
+        self.left_timer.start()
+        self.right_timer.start()
+
         while self._running:
             self.receive()
 
@@ -37,6 +80,17 @@ class SearchingBase(Thread):
             except OSError:
                 print('OSError')
                 return None
+
+            self.is_right_connected = not self.right_timer.time_is_over()
+            self.is_left_connected = not self.left_timer.time_is_over()
+
+            if self.received_data != '':
+                if self.received_data[0] == 'r':
+                    self.is_right_connected = True
+                elif self.received_data[0] == 'l':
+                    self.is_left_connected = True
+
+            print(self.is_left_connected, self.is_right_connected)
 
             return self.received_data
 
