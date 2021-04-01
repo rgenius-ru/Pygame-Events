@@ -86,9 +86,11 @@ class SearchingBase(Thread):
             except OSError:
                 print('OSError')
                 return None
-
-            self.is_right_connected = not self.right_timer.time_is_over()
-            self.is_left_connected = not self.left_timer.time_is_over()
+            
+            if self.right_timer.time_is_over():
+                self.is_right_connected = False
+            if self.left_timer.time_is_over():
+                self.is_left_connected = False
 
             if self.received_data != '':
                 if self.received_data[0] == 'r':
