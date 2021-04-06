@@ -47,17 +47,20 @@ def send_l_or_r(side: str):
         except socket.error as err:
             print(f'socket creation failed with error {err}')
 
+        value = None
         if side == 'l':
             value_left += randint(-delta, delta)
             value_left = constrain(value_left, 100, 255)
+            value = value_left
         elif side == 'r':
             value_right += randint(-delta, delta)
             value_right = constrain(value_right, 100, 255)
+            value = value_right
         else:
             s.close()
             return False
 
-        string = side + str(value_left) + '\r'
+        string = side + str(value) + '\r'
         send_data(s, string)
 
         s.close()
@@ -65,7 +68,7 @@ def send_l_or_r(side: str):
 
 
 while True:
-    send_l_or_r('l')
+    #send_l_or_r('l')
     sleep(0.2)
     send_l_or_r('r')
     sleep(0.2)
