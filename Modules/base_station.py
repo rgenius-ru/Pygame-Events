@@ -93,6 +93,8 @@ class SearchingBase(Thread):
                 self.is_left_connected = False
 
             if self.received_data != '':
+                # print(self.received_data)
+
                 if self.received_data[0] == 'r':
                     self.right_timer.restart()
                     self.is_right_connected = True
