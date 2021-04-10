@@ -68,7 +68,7 @@ def send_l_or_r(side: str):
 
 
 while True:
-    #send_l_or_r('l')
+    send_l_or_r('l')
     sleep(0.2)
     send_l_or_r('r')
     sleep(0.2)
