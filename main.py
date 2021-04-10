@@ -150,6 +150,20 @@ def game1_screen2_loop():
     if game1.score1_value >= 2 or game1.score2_value >= 2:
         game1.is_game_over = True
 
+    if not (game1.is_game_over or game1.is_round_over):
+        data = base_station.received_data
+        if data is None:
+            print('Data can not received')
+        elif len(data) > 1:
+            speed = int(5 * int(data[1:]) / 255)
+            print('speed up: ', data, speed)
+            if data[0] == 'l':
+                player1.speed = speed
+                player1.launch()
+            elif data[0] == 'r':
+                player2.speed = speed
+                player2.launch()
+
     events = pg.event.get()
     for event in events:
         if event.type == pg.QUIT:
@@ -174,19 +188,6 @@ def game1_screen2_loop():
                     return True
 
         else:
-            data = base_station.received_data
-            if data is None:
-                print('Data can not received')
-            elif len(data) > 1:
-                speed = int(5 * int(data[1:]) / 255)
-                # print('speed up: ', data, speed)
-                if data[0] == 'l':
-                    player1.speed = speed
-                    player1.launch()
-                elif data[0] == 'r':
-                    player2.speed = speed
-                    player2.launch()
-
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_w:
                     player1.launch()
@@ -350,10 +351,10 @@ def game1_screen1_loop():
         if data is None:
             print('Data can not received')
         elif len(data) > 1:
-            move_sensor_speed = 25
+            move_sensor_speed = 1
             speed = int(max_players_speed * int(data[1:]) * move_sensor_speed / 255)
             value = int(speed * 100 / max_players_speed)
-            print('speed up: ', data, speed)
+            # print('speed up: ', data, speed)
             if data[0] == 'l':
                 left_connection_group.value = value
             elif data[0] == 'r':
