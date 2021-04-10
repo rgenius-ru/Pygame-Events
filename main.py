@@ -175,7 +175,6 @@ def game1_screen2_loop():
 
         else:
             data = base_station.received_data
-            # data = 'l150'
             if data is None:
                 print('Data can not received')
             elif len(data) > 1:
