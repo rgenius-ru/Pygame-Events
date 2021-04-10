@@ -3,8 +3,8 @@ from time import sleep
 from random import randint
 
 value_left = 127
-value_right = 127
-delta = 40
+value_right = 7
+delta = 1
 
 
 def constrain(number, _min, _max):
@@ -54,7 +54,7 @@ def send_l_or_r(side: str):
             value = value_left
         elif side == 'r':
             value_right += randint(-delta, delta)
-            value_right = constrain(value_right, 100, 255)
+            value_right = constrain(value_right, 0, 9)
             value = value_right
         else:
             s.close()
