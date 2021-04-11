@@ -229,7 +229,7 @@ def draw_text_input_rect(crns, screen):
 
 
 def choice_group1_update(_events, input_crns, choice_crns):
-    draw_choice_rect(choice_crns, game1.screen1.screen)
+    # draw_choice_rect(choice_crns, game1.screen1.screen)
     rect_input = draw_text_input_rect(input_crns, game1.screen1.screen)
 
     text_input1.update(_events)
@@ -284,7 +284,7 @@ def choice_group1_update(_events, input_crns, choice_crns):
 
 def choice_group2_update(_events, input_crns, choice_crns):
 
-    draw_choice_rect(choice_crns, game1.screen1.screen)
+    # draw_choice_rect(choice_crns, game1.screen1.screen)
     rect_input = draw_text_input_rect(input_crns, game1.screen1.screen)
 
     text_input2.update(_events)
@@ -516,6 +516,7 @@ right_connection_group = ConnectionGroup(
     img_inactive=img2,
     x=game1.screen1.width - 100 - img1.get_width(),
     y=button_quit.rect.y,
+    is_active=False,
     align='Right'
 )
 left_connection_group = ConnectionGroup(
